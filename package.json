@@ -75,6 +75,9 @@
     "testEnvironment": "node"
   },
   "lint-staged": {
-    "*.js": "eslint --cache --fix"
+    "*.(js|ts)": [
+      "nmp run lint",
+      "npm run test"
+    ]
   }
 }
