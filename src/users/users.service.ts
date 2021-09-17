@@ -1,11 +1,42 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { USER_ERRORS } from './users.errors';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UsersRepository } from './users.repository';
 
 @Injectable()
 export class UsersService {
-  create(_createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(UsersRepository)
+    private readonly usersRepository: UsersRepository,
+    private readonly logger: Logger,
+  ) {}
+
+  async create(createUserDto: CreateUserDto): Promise<void> {
+    try {
+      await this.usersRepository.createUser(createUserDto);
+    } catch (err) {
+      if (err.code === USER_ERRORS.DUPLICATE_USERNAME) {
+        throw new ConflictException(
+          `User with ${
+            err?.detail?.includes('email')
+              ? `email ${createUserDto.email}`
+              : `username ${createUserDto.username}`
+          } already exist`,
+        );
+      } else {
+        this.logger.log(err);
+
+        throw new InternalServerErrorException();
+      }
+    }
   }
 
   findAll() {

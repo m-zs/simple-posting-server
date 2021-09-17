@@ -1,0 +1,3 @@
+export enum USER_ERRORS {
+  DUPLICATE_USERNAME = '23505',
+}
