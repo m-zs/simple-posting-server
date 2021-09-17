@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { WinstonModule } from 'nest-winston';
 import { SwaggerModule } from '@nestjs/swagger';
+import { ValidationPipe } from '@nestjs/common';
 
 import { configService } from './config';
 import { swaggerConfig } from './swagger.config';
@@ -13,9 +14,10 @@ async function bootstrap() {
     configService.isProduction() ? PROD_LOGGER_CFG : DEV_LOGGER_CFG,
   );
   const app = await NestFactory.create(AppModule, { logger });
-
   const document = SwaggerModule.createDocument(app, swaggerConfig);
+
   SwaggerModule.setup('api', app, document);
+  app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(port);
   logger.log(`Listening at port: ${port}`);
