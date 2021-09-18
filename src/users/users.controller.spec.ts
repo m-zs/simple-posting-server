@@ -1,13 +1,14 @@
 import { Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
+import { MockType } from 'src/types';
 import { UsersController } from './users.controller';
 import { UsersRepository } from './users.repository';
 import { UsersService } from './users.service';
 
 describe('UsersController', () => {
   let usersController: UsersController;
-  let usersService: UsersService;
+  let usersService: MockType<UsersService>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -15,31 +16,35 @@ describe('UsersController', () => {
       providers: [
         {
           provide: UsersRepository,
-          useClass: jest.fn(),
+          useFactory: jest.fn(),
         },
-        { provide: Logger, useClass: jest.fn() },
-        UsersService,
+        {
+          provide: Logger,
+          useFactory: jest.fn(),
+        },
+        {
+          provide: UsersService,
+          useFactory: jest.fn(() => ({ createUser: jest.fn() })),
+        },
       ],
     }).compile();
 
     usersController = module.get<UsersController>(UsersController);
-    usersService = module.get<UsersService>(UsersService);
+    usersService = module.get(UsersService);
   });
 
   describe('createUser', () => {
-    it('should return void', async () => {
-      const expectedResult = undefined;
-      const createSpy = jest
-        .spyOn(usersService, 'createUser')
-        .mockImplementation(() => Promise.resolve(expectedResult));
+    it('should return expected value', async () => {
+      const expectedResult = 'value';
 
+      usersService.createUser?.mockResolvedValue(expectedResult);
       const result = await usersController.createUser({
         username: '',
         email: '',
         password: '',
       });
 
-      expect(createSpy).toHaveBeenCalledTimes(1);
+      expect(usersService.createUser).toHaveBeenCalledTimes(1);
       expect(result).toBe(expectedResult);
     });
   });
