@@ -19,9 +19,9 @@ export class UsersService {
     private readonly logger: Logger,
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<void> {
+  async createUser(createUserDto: CreateUserDto): Promise<void> {
     try {
-      await this.usersRepository.createUser(createUserDto);
+      return await this.usersRepository.createUser(createUserDto);
     } catch (err) {
       if (err.code === USER_ERRORS.DUPLICATE_USERNAME) {
         throw new ConflictException(
