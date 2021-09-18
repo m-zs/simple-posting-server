@@ -32,7 +32,7 @@ export class UsersService {
           } already exist`,
         );
       } else {
-        this.logger.log(err);
+        this.logger.error(err);
 
         throw new InternalServerErrorException();
       }
