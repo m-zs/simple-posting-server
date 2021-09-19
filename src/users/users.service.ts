@@ -24,16 +24,21 @@ export class UsersService {
     try {
       return await this.usersRepository.createUser(createUserDto);
     } catch (err) {
+      const { email, username } = createUserDto;
+
       if (err.code === USER_ERRORS.DUPLICATE_USERNAME) {
         throw new ConflictException(
           `User with ${
             err?.detail?.includes('email')
-              ? `email ${createUserDto.email}`
-              : `username ${createUserDto.username}`
+              ? `email ${email}`
+              : `username ${username}`
           } already exist`,
         );
       } else {
-        this.logger.error(err);
+        this.logger.error(
+          `Failed to create user with username: ${username}, email: ${email}`,
+          err,
+        );
 
         throw new InternalServerErrorException();
       }
@@ -41,11 +46,23 @@ export class UsersService {
   }
 
   async findUsers(): Promise<User[]> {
-    return await this.usersRepository.findUsers();
+    try {
+      return await this.usersRepository.findUsers();
+    } catch (err) {
+      this.logger.error(`Failed to find users`, err);
+
+      throw new InternalServerErrorException();
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findUser(id: string): Promise<User | undefined> {
+    try {
+      return await this.usersRepository.findUser(id);
+    } catch (err) {
+      this.logger.error(`Failed to find user with id: ${id}`, err);
+
+      throw new InternalServerErrorException();
+    }
   }
 
   update(id: number, _updateUserDto: UpdateUserDto) {

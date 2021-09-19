@@ -23,4 +23,8 @@ export class UsersRepository extends Repository<User> {
   async findUsers(): Promise<User[]> {
     return await this.find();
   }
+
+  async findUser(id: string): Promise<User | undefined> {
+    return await this.findOne(id);
+  }
 }
