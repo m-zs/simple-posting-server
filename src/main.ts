@@ -6,6 +6,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { configService } from './config';
 import { swaggerConfig } from './swagger.config';
 import { DEV_LOGGER_CFG, PROD_LOGGER_CFG } from './logger';
+import { TransformInterceptor } from './transform-interceptor';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -17,6 +18,7 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, swaggerConfig);
 
   SwaggerModule.setup('api', app, document);
+  app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalPipes(new ValidationPipe());
 
   await app.listen(port);
