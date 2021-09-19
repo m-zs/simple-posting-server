@@ -20,7 +20,10 @@ describe('UsersService', () => {
       providers: [
         {
           provide: UsersRepository,
-          useFactory: jest.fn(() => ({ createUser: jest.fn() })),
+          useFactory: jest.fn(() => ({
+            createUser: jest.fn(),
+            findUsers: jest.fn(),
+          })),
         },
         { provide: Logger, useFactory: jest.fn(() => ({ error: jest.fn() })) },
         UsersService,
@@ -43,6 +46,7 @@ describe('UsersService', () => {
       const expectedResult = 'value';
 
       usersRepository.createUser?.mockResolvedValue(expectedResult);
+
       const result = await usersService.createUser(userData);
 
       expect(result).toBe(expectedResult);
@@ -69,6 +73,18 @@ describe('UsersService', () => {
         InternalServerErrorException,
       );
       expect(logger.error).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('findUsers', () => {
+    it('should return expected value', async () => {
+      const expectedResult = 'value';
+
+      usersRepository.findUsers?.mockResolvedValueOnce(expectedResult);
+
+      const result = await usersService.findUsers();
+
+      expect(result).toBe(expectedResult);
     });
   });
 });

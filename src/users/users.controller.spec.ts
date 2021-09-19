@@ -24,7 +24,10 @@ describe('UsersController', () => {
         },
         {
           provide: UsersService,
-          useFactory: jest.fn(() => ({ createUser: jest.fn() })),
+          useFactory: jest.fn(() => ({
+            createUser: jest.fn(),
+            findUsers: jest.fn(),
+          })),
         },
       ],
     }).compile();
@@ -38,6 +41,7 @@ describe('UsersController', () => {
       const expectedResult = 'value';
 
       usersService.createUser?.mockResolvedValue(expectedResult);
+
       const result = await usersController.createUser({
         username: '',
         email: '',
@@ -45,6 +49,18 @@ describe('UsersController', () => {
       });
 
       expect(usersService.createUser).toHaveBeenCalledTimes(1);
+      expect(result).toBe(expectedResult);
+    });
+  });
+
+  describe('findUsers', () => {
+    it('should return expected value', async () => {
+      const expectedResult = 'value';
+
+      usersService.findUsers?.mockResolvedValueOnce(expectedResult);
+
+      const result = await usersController.findUsers();
+
       expect(result).toBe(expectedResult);
     });
   });
