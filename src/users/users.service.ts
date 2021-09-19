@@ -9,6 +9,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { USER_ERRORS } from './users.errors';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { User } from './entities/user.entity';
 import { UsersRepository } from './users.repository';
 
 @Injectable()
@@ -39,8 +40,8 @@ export class UsersService {
     }
   }
 
-  findAll() {
-    return `This action returns all users`;
+  async findUsers(): Promise<User[]> {
+    return await this.usersRepository.findUsers();
   }
 
   findOne(id: number) {

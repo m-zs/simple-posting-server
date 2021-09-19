@@ -6,7 +6,7 @@ import { User } from './entities/user.entity';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {
-  async createUser(createUserDto: CreateUserDto) {
+  async createUser(createUserDto: CreateUserDto): Promise<void> {
     const { username, password, email } = createUserDto;
 
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -18,5 +18,9 @@ export class UsersRepository extends Repository<User> {
     });
 
     await this.save(newUser);
+  }
+
+  async findUsers(): Promise<User[]> {
+    return await this.find();
   }
 }
