@@ -23,6 +23,7 @@ describe('UsersService', () => {
           useFactory: jest.fn(() => ({
             createUser: jest.fn(),
             findUsers: jest.fn(),
+            findUser: jest.fn(),
           })),
         },
         { provide: Logger, useFactory: jest.fn(() => ({ error: jest.fn() })) },
@@ -85,6 +86,42 @@ describe('UsersService', () => {
       const result = await usersService.findUsers();
 
       expect(result).toBe(expectedResult);
+    });
+
+    it('should log errors and propagate InternalServerErrorException', async () => {
+      usersRepository.findUsers?.mockImplementationOnce(() => {
+        throw new Error();
+      });
+      logger.error?.mockReturnValueOnce(null);
+
+      await expect(usersService.findUsers()).rejects.toThrowError(
+        InternalServerErrorException,
+      );
+      expect(logger.error).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  describe('findUser', () => {
+    it('should return expected value', async () => {
+      const expectedResult = 'value';
+
+      usersRepository.findUser?.mockResolvedValueOnce(expectedResult);
+
+      const result = await usersService.findUser('id');
+
+      expect(result).toBe(expectedResult);
+    });
+
+    it('should log errors and propagate InternalServerErrorException', async () => {
+      usersRepository.findUser?.mockImplementationOnce(() => {
+        throw new Error();
+      });
+      logger.error?.mockReturnValueOnce(null);
+
+      await expect(usersService.findUser('id')).rejects.toThrowError(
+        InternalServerErrorException,
+      );
+      expect(logger.error).toHaveBeenCalledTimes(1);
     });
   });
 });

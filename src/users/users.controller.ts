@@ -36,7 +36,7 @@ export class UsersController {
   @Get(':id')
   @ApiOperation({ summary: 'Get a single user' })
   @ApiResponse({ type: User })
-  async findOne(@Param('id') id: string): Promise<User> {
+  async findUser(@Param('id') id: string): Promise<User> {
     const user = await this.usersService.findUser(id);
 
     if (!user) {
