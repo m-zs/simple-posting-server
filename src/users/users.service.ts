@@ -35,7 +35,7 @@ export class UsersService {
     return await this.usersRepository.updateUser(id, updateUserDto);
   }
 
-  async removeUser(_id: string): Promise<void> {
-    return;
+  async removeUser(id: string): Promise<void> {
+    return await this.usersRepository.removeUser(id);
   }
 }

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseInterceptors,
+  HttpCode,
 } from '@nestjs/common';
 
 import { User } from './entities/user.entity';
@@ -25,6 +26,7 @@ export class UsersController {
   @Post()
   @UseInterceptors(ConflictInterceptor)
   @ApiOperation({ summary: 'Create new user' })
+  @HttpCode(204)
   async createUser(@Body() createUserDto: CreateUserDto): Promise<void> {
     return await this.usersService.createUser(createUserDto);
   }
@@ -48,6 +50,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Update user data' })
   @ApiParam({ name: 'id', description: 'User id' })
   @UseInterceptors(ConflictInterceptor)
+  @HttpCode(204)
   async updateUser(
     @Param('id') id: string,
     @Body(new ValidatePayloadExistsPipe())
@@ -59,6 +62,7 @@ export class UsersController {
   @Delete(':id')
   @ApiOperation({ summary: 'Delete user' })
   @ApiParam({ name: 'id', description: 'User id' })
+  @HttpCode(204)
   async removeUser(@Param() id: string): Promise<void> {
     return this.usersService.removeUser(id);
   }

@@ -41,7 +41,11 @@ export class UsersRepository extends Repository<User> {
     );
   }
 
-  async hashPassword(password: string) {
+  async removeUser(id: string): Promise<void> {
+    await this.delete(id);
+  }
+
+  async hashPassword(password: string): Promise<string> {
     return await bcrypt.hash(password, 10);
   }
 
