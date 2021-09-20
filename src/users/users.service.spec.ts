@@ -1,6 +1,4 @@
-import { ConflictException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { USER_ERRORS } from './users.errors';
 
 import { MockType } from 'src/types';
 import { UsersRepository } from './users.repository';
@@ -46,16 +44,6 @@ describe('UsersService', () => {
 
       expect(result).toBe(expectedResult);
       expect(usersRepository.createUser).toHaveBeenCalledTimes(1);
-    });
-
-    it(`should throw ConfilctException when error with code: ${USER_ERRORS.DUPLICATE_USERNAME} occurs`, async () => {
-      usersRepository.createUser?.mockImplementationOnce(() => {
-        throw { code: USER_ERRORS.DUPLICATE_USERNAME };
-      });
-
-      await expect(usersService.createUser(userData)).rejects.toThrowError(
-        ConflictException,
-      );
     });
   });
 

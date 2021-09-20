@@ -27,15 +27,24 @@ export class UsersRepository extends Repository<User> {
     return await this.findOne(id);
   }
 
-  async updateUser(_id: string, _updateUserDto: UpdateUserDto): Promise<void> {
-    // const { email, password } = updateUserDto;
-    // await this.saveUser({
-    //   ...(email && { email }),
-    //   ...(password && { password: await this.hashPassword(password) }),
-    // });
+  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<void> {
+    const { password } = updateUserDto;
+
+    const g = await this.update(
+      { id },
+      {
+        ...updateUserDto,
+        ...(password && {
+          password: await this.hashPassword(password),
+        }),
+      },
+    );
+    console.log(g);
+
+    return;
   }
 
-  private async hashPassword(password: string) {
+  async hashPassword(password: string) {
     return await bcrypt.hash(password, 10);
   }
 
