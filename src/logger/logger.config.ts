@@ -4,7 +4,7 @@ const { timestamp, combine, errors, printf, json } = format;
 
 const logFormat = printf(
   ({ level, message, timestamp, stack }) =>
-    `${timestamp} ${level}: ${stack || message}`,
+    `${timestamp} ${level}: ${message}: ${stack}`,
 );
 
 export const DEV_LOGGER_CFG = {
