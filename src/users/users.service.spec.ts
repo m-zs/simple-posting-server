@@ -1,8 +1,4 @@
-import { Logger } from '@nestjs/common';
-import {
-  ConflictException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { ConflictException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { USER_ERRORS } from './users.errors';
 
@@ -13,7 +9,6 @@ import { UsersService } from './users.service';
 describe('UsersService', () => {
   let usersService: UsersService;
   let usersRepository: MockType<UsersRepository>;
-  let logger: MockType<Logger>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -26,14 +21,13 @@ describe('UsersService', () => {
             findUser: jest.fn(),
           })),
         },
-        { provide: Logger, useFactory: jest.fn(() => ({ error: jest.fn() })) },
+
         UsersService,
       ],
     }).compile();
 
     usersService = module.get<UsersService>(UsersService);
     usersRepository = module.get(UsersRepository);
-    logger = module.get(Logger);
   });
 
   describe('createUser', () => {
@@ -63,18 +57,6 @@ describe('UsersService', () => {
         ConflictException,
       );
     });
-
-    it('should log errors and propagate InternalServerErrorException', async () => {
-      usersRepository.createUser?.mockImplementationOnce(() => {
-        throw new Error();
-      });
-      logger.error?.mockReturnValueOnce(null);
-
-      await expect(usersService.createUser(userData)).rejects.toThrowError(
-        InternalServerErrorException,
-      );
-      expect(logger.error).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe('findUsers', () => {
@@ -87,18 +69,6 @@ describe('UsersService', () => {
 
       expect(result).toBe(expectedResult);
     });
-
-    it('should log errors and propagate InternalServerErrorException', async () => {
-      usersRepository.findUsers?.mockImplementationOnce(() => {
-        throw new Error();
-      });
-      logger.error?.mockReturnValueOnce(null);
-
-      await expect(usersService.findUsers()).rejects.toThrowError(
-        InternalServerErrorException,
-      );
-      expect(logger.error).toHaveBeenCalledTimes(1);
-    });
   });
 
   describe('findUser', () => {
@@ -110,18 +80,6 @@ describe('UsersService', () => {
       const result = await usersService.findUser('id');
 
       expect(result).toBe(expectedResult);
-    });
-
-    it('should log errors and propagate InternalServerErrorException', async () => {
-      usersRepository.findUser?.mockImplementationOnce(() => {
-        throw new Error();
-      });
-      logger.error?.mockReturnValueOnce(null);
-
-      await expect(usersService.findUser('id')).rejects.toThrowError(
-        InternalServerErrorException,
-      );
-      expect(logger.error).toHaveBeenCalledTimes(1);
     });
   });
 });

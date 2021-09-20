@@ -6,7 +6,6 @@ import {
   Patch,
   Param,
   Delete,
-  NotFoundException,
 } from '@nestjs/common';
 
 import { User } from './entities/user.entity';
@@ -37,22 +36,20 @@ export class UsersController {
   @ApiOperation({ summary: 'Get a single user' })
   @ApiResponse({ type: User })
   async findUser(@Param('id') id: string): Promise<User> {
-    const user = await this.usersService.findUser(id);
-
-    if (!user) {
-      throw new NotFoundException();
-    }
-
-    return user;
+    return await this.usersService.findUser(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @ApiOperation({ summary: 'Update user data' })
+  async updateUser(
+    @Param('id') id: string,
+    @Body() updateUserDto: UpdateUserDto,
+  ): Promise<void> {
+    return this.usersService.updateUser(id, updateUserDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  async removeUser(@Param('id') id: string): Promise<void> {
+    return this.usersService.removeUser(id);
   }
 }

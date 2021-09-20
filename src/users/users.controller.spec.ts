@@ -1,4 +1,4 @@
-import { Logger, NotFoundException } from '@nestjs/common';
+import { Logger } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { MockType } from 'src/types';
@@ -75,14 +75,6 @@ describe('UsersController', () => {
       const result = await usersController.findUser('');
 
       expect(result).toBe(expectedResult);
-    });
-
-    it('should throw NotFoundException if user is undefined', async () => {
-      usersService.findUser?.mockResolvedValueOnce(undefined);
-
-      await expect(usersController.findUser('')).rejects.toThrowError(
-        NotFoundException,
-      );
     });
   });
 });
