@@ -9,12 +9,12 @@ import {
   UseInterceptors,
   HttpCode,
 } from '@nestjs/common';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ValidatePayloadExistsPipe } from 'src/shared/pipes/validate-payload-exist.pipe';
 import { ConflictInterceptor } from 'src/shared/interceptors/conflict.interceptor';
 
