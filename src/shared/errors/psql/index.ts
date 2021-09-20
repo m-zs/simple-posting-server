@@ -1,2 +1,2 @@
-export * from './psql-db.errors';
+export * from './psql-db.helpers';
 export * from './psql-db.types';
