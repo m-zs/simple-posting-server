@@ -65,8 +65,8 @@ export class UsersService {
     }
   }
 
-  update(id: number, _updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<void> {
+    return await this.usersRepository.updateUser(id, updateUserDto);
   }
 
   remove(id: number) {
