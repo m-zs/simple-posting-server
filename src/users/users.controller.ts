@@ -13,6 +13,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ValidatePayloadExistsPipe } from 'src/shared/pipes/validate-payload-exist.pipe';
 
 @Controller('users')
 @ApiTags('users')
@@ -43,7 +44,8 @@ export class UsersController {
   @ApiOperation({ summary: 'Update user data' })
   async updateUser(
     @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
+    @Body(new ValidatePayloadExistsPipe())
+    updateUserDto: UpdateUserDto,
   ): Promise<void> {
     return this.usersService.updateUser(id, updateUserDto);
   }
