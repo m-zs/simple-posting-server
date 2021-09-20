@@ -1,7 +1,3 @@
-export enum DB_ERRORS {
-  DUPLICATE = '23505',
-}
-
 export const formatDuplicateMessage = (details: string) => {
   const matches = details.match(/\(.*?\)/g)?.map((x) => x.replace(/[()]/g, ''));
 
