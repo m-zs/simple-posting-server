@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { catchError, Observable } from 'rxjs';
 
-import { DB_ERRORS, formatDuplicateMessage } from 'src/shared/errors';
+import { DB_ERRORS, formatDuplicateMessage } from 'src/shared/errors/psql';
 
 @Injectable()
 export class ConflictInterceptor implements NestInterceptor {
