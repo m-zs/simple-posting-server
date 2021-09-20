@@ -30,7 +30,7 @@ export class UsersRepository extends Repository<User> {
   async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<void> {
     const { password } = updateUserDto;
 
-    const g = await this.update(
+    await this.update(
       { id },
       {
         ...updateUserDto,
@@ -39,9 +39,6 @@ export class UsersRepository extends Repository<User> {
         }),
       },
     );
-    console.log(g);
-
-    return;
   }
 
   async hashPassword(password: string) {
