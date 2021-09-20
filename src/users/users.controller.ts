@@ -13,7 +13,7 @@ import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UsersService } from './users.service';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { ValidatePayloadExistsPipe } from 'src/shared/pipes/validate-payload-exist.pipe';
 import { ConflictInterceptor } from 'src/shared/interceptors/conflict.interceptor';
 
@@ -38,6 +38,7 @@ export class UsersController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Get a single user' })
+  @ApiParam({ name: 'id', description: 'User id' })
   @ApiResponse({ type: User })
   async findUser(@Param('id') id: string): Promise<User> {
     return await this.usersService.findUser(id);
@@ -45,6 +46,7 @@ export class UsersController {
 
   @Patch(':id')
   @ApiOperation({ summary: 'Update user data' })
+  @ApiParam({ name: 'id', description: 'User id' })
   @UseInterceptors(ConflictInterceptor)
   async updateUser(
     @Param('id') id: string,
@@ -55,7 +57,9 @@ export class UsersController {
   }
 
   @Delete(':id')
-  async removeUser(@Param('id') id: string): Promise<void> {
+  @ApiOperation({ summary: 'Delete user' })
+  @ApiParam({ name: 'id', description: 'User id' })
+  async removeUser(@Param() id: string): Promise<void> {
     return this.usersService.removeUser(id);
   }
 }
