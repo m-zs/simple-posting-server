@@ -28,6 +28,7 @@ describe('UsersController', () => {
             createUser: jest.fn(),
             findUsers: jest.fn(),
             findUser: jest.fn(),
+            removeUser: jest.fn(),
           })),
         },
       ],
@@ -73,6 +74,18 @@ describe('UsersController', () => {
       usersService.findUser?.mockResolvedValueOnce(expectedResult);
 
       const result = await usersController.findUser('');
+
+      expect(result).toBe(expectedResult);
+    });
+  });
+
+  describe('removeUser', () => {
+    it('should return expected value', async () => {
+      const expectedResult = 'value';
+
+      usersService.removeUser?.mockResolvedValueOnce(expectedResult);
+
+      const result = await usersController.removeUser('');
 
       expect(result).toBe(expectedResult);
     });

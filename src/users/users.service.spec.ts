@@ -17,6 +17,7 @@ describe('UsersService', () => {
             createUser: jest.fn(),
             findUsers: jest.fn(),
             findUser: jest.fn(),
+            removeUser: jest.fn(),
           })),
         },
 
@@ -66,6 +67,18 @@ describe('UsersService', () => {
       usersRepository.findUser?.mockResolvedValueOnce(expectedResult);
 
       const result = await usersService.findUser('id');
+
+      expect(result).toBe(expectedResult);
+    });
+  });
+
+  describe('removeUser', () => {
+    it('should return expected value', async () => {
+      const expectedResult = 'value';
+
+      usersRepository.removeUser?.mockResolvedValueOnce(expectedResult);
+
+      const result = await usersService.removeUser('id');
 
       expect(result).toBe(expectedResult);
     });
