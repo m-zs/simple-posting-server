@@ -4,7 +4,7 @@ import { Logger, ValidationPipe } from '@nestjs/common';
 
 import { configService } from './config';
 import { swaggerConfig } from './swagger.config';
-import { TransformInterceptor } from './shared/interceptors/transform-interceptor';
+import { TransformInterceptor } from './shared/interceptors/transform.interceptor';
 import { AllExceptionsFilter } from './shared/filters/all-exceptions.filter';
 import { AppModule } from './app.module';
 
