@@ -1,6 +1,7 @@
 import { HttpAdapterHost, NestFactory } from '@nestjs/core';
 import { SwaggerModule } from '@nestjs/swagger';
 import { Logger, ValidationPipe } from '@nestjs/common';
+import * as cookieParser from 'cookie-parser';
 
 import { configService } from './config';
 import { swaggerConfig } from './swagger.config';
@@ -16,6 +17,7 @@ async function bootstrap() {
   const { httpAdapter } = app.get(HttpAdapterHost);
 
   SwaggerModule.setup('api', app, document);
+  app.use(cookieParser());
   app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
   app.useGlobalPipes(new ValidationPipe());
