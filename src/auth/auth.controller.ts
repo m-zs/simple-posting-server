@@ -38,9 +38,9 @@ export class AuthController {
   @UseGuards(JwtRefreshGuard)
   @HttpCode(200)
   async singOut(
-    @Res({ passthrough: true }) res: Response,
     @GetUser() user: AuthUser,
-  ) {
+    @Res({ passthrough: true }) res: Response,
+  ): Promise<void> {
     await this.authService.signOut(user);
 
     res.clearCookie('rtc');
@@ -49,13 +49,12 @@ export class AuthController {
   @Get('refresh')
   @UseGuards(JwtRefreshGuard)
   async refresh(
-    @Res({ passthrough: true }) res: Response,
     @GetUser() user: AuthUser,
+    @Res({ passthrough: true }) res: Response,
   ): Promise<{ accessToken: string }> {
     const { accessToken, refreshToken } = await this.authService.refresh(user);
 
     res.cookie('rtc', refreshToken, { httpOnly: true });
-
     return { accessToken };
   }
 }
