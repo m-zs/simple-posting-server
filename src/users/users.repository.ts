@@ -27,6 +27,10 @@ export class UsersRepository extends Repository<User> {
     return await this.findOne(id);
   }
 
+  async findUserByUsername(username: string): Promise<User | undefined> {
+    return await this.findOne({ username });
+  }
+
   async updateUser(id: string, updateUserDto: UpdateUserDto): Promise<void> {
     const { password } = updateUserDto;
 
@@ -43,6 +47,10 @@ export class UsersRepository extends Repository<User> {
 
   async removeUser(id: string): Promise<void> {
     await this.delete(id);
+  }
+
+  async updateSession(id: string, sessionVersion?: string): Promise<void> {
+    await this.update({ id }, { sessionVersion });
   }
 
   async hashPassword(password: string): Promise<string> {

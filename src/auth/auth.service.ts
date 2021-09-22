@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 
+import { configService } from 'src/config';
 import { UsersRepository } from 'src/users/users.repository';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 
@@ -25,15 +26,25 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
+    const refreshToken = this.jwtService.sign(
+      { username, id: user.id },
+      {
+        expiresIn: '7d',
+        secret: configService.getValue('JWT_REFRESH_SECRET'),
+      },
+    );
+
+    await this.usersRepository.updateSession(user.id, refreshToken);
+
     return {
       accessToken: this.jwtService.sign(
         { username, id: user.id },
-        { expiresIn: '1h' },
+        {
+          expiresIn: '1h',
+          secret: configService.getValue('JWT_ACCESS_SECRET'),
+        },
       ),
-      refreshToken: this.jwtService.sign(
-        { username, id: user.id },
-        { expiresIn: '7d' },
-      ),
+      refreshToken,
     };
   }
 }

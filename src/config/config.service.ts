@@ -9,7 +9,8 @@ const requiredEnvs = [
   'POSTGRES_USER',
   'POSTGRES_PASSWORD',
   'POSTGRES_DATABASE',
-  'JWT_SECRET',
+  'JWT_ACCESS_SECRET',
+  'JWT_REFRESH_SECRET',
   'PORT',
   'MODE',
 ] as const;
