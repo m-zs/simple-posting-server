@@ -52,6 +52,10 @@ export class AuthService {
     };
   }
 
+  async signOut(user: AuthUser): Promise<void> {
+    await this.usersRepository.updateSession(user.id, undefined);
+  }
+
   private createRefreshToken = (username: string, id: string): string => {
     return this.jwtService.sign(
       { username, id: id },

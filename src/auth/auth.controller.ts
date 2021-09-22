@@ -19,7 +19,7 @@ import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('/signin')
+  @Post('signin')
   @HttpCode(200)
   async signIn(
     @Body() authCredentialsDto: AuthCredentialsDto,
@@ -34,7 +34,19 @@ export class AuthController {
     return { accessToken };
   }
 
-  @Get('/refresh')
+  @Post('signout')
+  @UseGuards(JwtRefreshGuard)
+  @HttpCode(200)
+  async singOut(
+    @Res({ passthrough: true }) res: Response,
+    @GetUser() user: AuthUser,
+  ) {
+    await this.authService.signOut(user);
+
+    res.clearCookie('rtc');
+  }
+
+  @Get('refresh')
   @UseGuards(JwtRefreshGuard)
   async refresh(
     @Res({ passthrough: true }) res: Response,
