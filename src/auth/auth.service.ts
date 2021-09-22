@@ -5,6 +5,7 @@ import * as bcrypt from 'bcrypt';
 
 import { configService } from 'src/config';
 import { UsersRepository } from 'src/users/users.repository';
+import { AuthUser } from './auth-user.type';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 
 @Injectable()
@@ -26,25 +27,48 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials');
     }
 
-    const refreshToken = this.jwtService.sign(
-      { username, id: user.id },
+    const refreshToken = this.createRefreshToken(username, user.id);
+
+    await this.usersRepository.updateSession(user.id, refreshToken);
+
+    return {
+      accessToken: this.createAccessToken(username, user.id),
+      refreshToken,
+    };
+  }
+
+  async refresh(
+    user: AuthUser,
+  ): Promise<{ accessToken: string; refreshToken: string }> {
+    const { username, id } = user;
+
+    const refreshToken = this.createRefreshToken(username, id);
+
+    await this.usersRepository.updateSession(id, refreshToken);
+
+    return {
+      accessToken: this.createAccessToken(username, id),
+      refreshToken,
+    };
+  }
+
+  private createRefreshToken = (username: string, id: string): string => {
+    return this.jwtService.sign(
+      { username, id: id },
       {
         expiresIn: '7d',
         secret: configService.getValue('JWT_REFRESH_SECRET'),
       },
     );
+  };
 
-    await this.usersRepository.updateSession(user.id, refreshToken);
-
-    return {
-      accessToken: this.jwtService.sign(
-        { username, id: user.id },
-        {
-          expiresIn: '1h',
-          secret: configService.getValue('JWT_ACCESS_SECRET'),
-        },
-      ),
-      refreshToken,
-    };
-  }
+  private createAccessToken = (username: string, id: string): string => {
+    return this.jwtService.sign(
+      { username, id: id },
+      {
+        expiresIn: '1h',
+        secret: configService.getValue('JWT_ACCESS_SECRET'),
+      },
+    );
+  };
 }

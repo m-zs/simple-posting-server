@@ -4,6 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { JwtStrategy } from './starategy/jwt.strategy';
+import { JwtRefreshStrategy } from './starategy/jwt-refresh.strategy';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { UsersRepository } from 'src/users/users.repository';
@@ -15,7 +16,7 @@ import { UsersRepository } from 'src/users/users.repository';
     JwtModule.register({}),
   ],
   controllers: [AuthController],
-  providers: [AuthService, JwtStrategy],
+  providers: [AuthService, JwtStrategy, JwtRefreshStrategy],
   exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}
