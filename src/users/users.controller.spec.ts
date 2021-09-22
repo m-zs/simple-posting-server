@@ -1,7 +1,7 @@
 import { Logger, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
-import { AuthModule } from 'src/auth/auth.module';
 
+import { AuthModule } from 'src/auth/auth.module';
 import { MockType } from 'src/types';
 import { UsersController } from './users.controller';
 import { UsersRepository } from './users.repository';
