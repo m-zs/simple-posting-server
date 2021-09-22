@@ -26,11 +26,11 @@ export class JwtRefreshStrategy extends PassportStrategy(
     });
   }
 
-  async validate(payload: JWTPayload): Promise<AuthUser> {
+  async validate(req: Request, payload: JWTPayload): Promise<AuthUser> {
     const { id } = payload;
     const user = await this.usersRepository.findUser(id);
 
-    if (!user) {
+    if (!user || req?.cookies?.rtc !== user.sessionVersion) {
       throw new UnauthorizedException();
     }
 
