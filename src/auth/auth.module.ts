@@ -17,6 +17,5 @@ import { UsersRepository } from 'src/users/users.repository';
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy, JwtRefreshStrategy],
-  exports: [JwtStrategy, PassportModule],
 })
 export class AuthModule {}
