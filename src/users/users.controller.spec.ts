@@ -1,5 +1,6 @@
-import { Logger } from '@nestjs/common';
+import { Logger, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
+import { AuthModule } from 'src/auth/auth.module';
 
 import { MockType } from 'src/types';
 import { UsersController } from './users.controller';
@@ -29,8 +30,10 @@ describe('UsersController', () => {
             findUsers: jest.fn(),
             findUser: jest.fn(),
             removeUser: jest.fn(),
+            updateUser: jest.fn(),
           })),
         },
+        { provide: AuthModule, useFactory: jest.fn() },
       ],
     }).compile();
 
@@ -85,9 +88,65 @@ describe('UsersController', () => {
 
       usersService.removeUser?.mockResolvedValueOnce(expectedResult);
 
-      const result = await usersController.removeUser('');
+      const result = await usersController.removeUser('1', {
+        id: '1',
+        username: '',
+        sessionVersion: '',
+      });
 
       expect(result).toBe(expectedResult);
+    });
+
+    it('should throw UnauthorizedException', async () => {
+      const expectedResult = 'value';
+
+      usersService.removeUser?.mockResolvedValueOnce(expectedResult);
+
+      await expect(
+        usersController.removeUser('1', {
+          id: '2',
+          username: '',
+          sessionVersion: '',
+        }),
+      ).rejects.toThrowError(UnauthorizedException);
+    });
+  });
+
+  describe('updateUser', () => {
+    it('should return expected value', async () => {
+      const expectedResult = 'value';
+
+      usersService.updateUser?.mockResolvedValueOnce(expectedResult);
+
+      const result = await usersController.updateUser(
+        '1',
+        {},
+        {
+          id: '1',
+          username: '',
+          sessionVersion: '',
+        },
+      );
+
+      expect(result).toBe(expectedResult);
+    });
+
+    it('should throw UnauthorizedException', async () => {
+      const expectedResult = 'value';
+
+      usersService.updateUser?.mockResolvedValueOnce(expectedResult);
+
+      await expect(
+        usersController.updateUser(
+          '1',
+          {},
+          {
+            id: '2',
+            username: '',
+            sessionVersion: '',
+          },
+        ),
+      ).rejects.toThrowError(UnauthorizedException);
     });
   });
 });
