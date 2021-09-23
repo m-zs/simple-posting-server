@@ -11,7 +11,7 @@ export class TrimInputPipe implements PipeTransform {
         (obj, key) => {
           const value = values[key];
 
-          if (typeof value === 'string') {
+          if (typeof value === 'string' && key !== 'password') {
             obj[key] = value.trim();
           }
 
