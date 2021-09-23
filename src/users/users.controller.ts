@@ -10,6 +10,7 @@ import {
   HttpCode,
   UseGuards,
   UnauthorizedException,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -47,7 +48,7 @@ export class UsersController {
   @ApiOperation({ summary: 'Get a single user' })
   @ApiParam({ name: 'id', description: 'User id' })
   @ApiResponse({ type: User })
-  async findUser(@Param('id') id: string): Promise<User> {
+  async findUser(@Param('id', ParseUUIDPipe) id: string): Promise<User> {
     return await this.usersService.findUser(id);
   }
 
@@ -58,7 +59,7 @@ export class UsersController {
   @UseInterceptors(ConflictInterceptor)
   @HttpCode(204)
   async updateUser(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body(new ValidatePayloadExistsPipe())
     updateUserDto: UpdateUserDto,
     @GetUser() user: AuthUser,
@@ -76,7 +77,7 @@ export class UsersController {
   @ApiParam({ name: 'id', description: 'User id' })
   @HttpCode(204)
   async removeUser(
-    @Param() id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @GetUser() user: AuthUser,
   ): Promise<void> {
     if (id !== user.id) {
