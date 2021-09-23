@@ -55,7 +55,7 @@ class ConfigService {
       cli: {
         migrationsDir: 'src/migration',
       },
-      ssl: this.isProduction(),
+      ssl: this.isProduction() ? { rejectUnauthorized: false } : false,
       autoLoadEntities: true,
       synchronize: true,
       logging: true,
