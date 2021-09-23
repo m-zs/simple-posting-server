@@ -7,6 +7,7 @@ import { configService } from './config';
 import { swaggerConfig } from './swagger.config';
 import { TransformInterceptor } from './shared/interceptors/transform.interceptor';
 import { AllExceptionsFilter } from './shared/filters/all-exceptions.filter';
+import { TrimInputPipe } from './shared/pipes/trim-input.pipe';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -18,9 +19,10 @@ async function bootstrap() {
 
   SwaggerModule.setup('api', app, document);
   app.use(cookieParser());
-  app.useGlobalInterceptors(new TransformInterceptor());
-  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
+  app.useGlobalPipes(new TrimInputPipe());
   app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
+  app.useGlobalInterceptors(new TransformInterceptor());
 
   await app.listen(port);
   Logger.log(`Listening at port: ${port}`);
