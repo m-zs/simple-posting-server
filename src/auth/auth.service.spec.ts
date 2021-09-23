@@ -101,4 +101,22 @@ describe('AuthService', () => {
       );
     });
   });
+
+  describe('refresh', () => {
+    it('should return expected value and update session', async () => {
+      const token = 'token';
+      const authUser = { username: 'user', id: 'id', sessionVersion: 'sess' };
+
+      jwtService.sign?.mockReturnValue(token);
+      usersRepository.updateSession?.mockImplementationOnce(jest.fn());
+
+      const result = await authService.refresh(authUser);
+
+      expect(usersRepository.updateSession).toHaveBeenCalledWith(
+        authUser.id,
+        token,
+      );
+      expect(result).toMatchObject({ accessToken: token, refreshToken: token });
+    });
+  });
 });
