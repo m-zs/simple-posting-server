@@ -119,4 +119,19 @@ describe('AuthService', () => {
       expect(result).toMatchObject({ accessToken: token, refreshToken: token });
     });
   });
+
+  describe('signOut', () => {
+    it('should update session', async () => {
+      const authUser = { username: 'user', id: 'id', sessionVersion: 'sess' };
+
+      usersRepository.updateSession?.mockImplementationOnce(jest.fn());
+
+      await authService.signOut(authUser);
+
+      expect(usersRepository.updateSession).toHaveBeenCalledWith(
+        authUser.id,
+        undefined,
+      );
+    });
+  });
 });
