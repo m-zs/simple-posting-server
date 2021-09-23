@@ -12,16 +12,16 @@ const requiredEnvs = [
   'JWT_ACCESS_SECRET',
   'JWT_REFRESH_SECRET',
   'PORT',
-  'MODE',
+  'NODE_ENV',
 ] as const;
 
 class ConfigService {
   constructor(private env: { [k: string]: string | undefined }) {}
 
-  getValue(key: typeof requiredEnvs[number]): string {
+  getValue(key: typeof requiredEnvs[number]): string | undefined {
     const value = this.env[key];
 
-    if (!value) {
+    if (!value && process.env.NODE_ENV !== 'TEST') {
       throw new Error(`config error - missing env.${key}`);
     }
 
@@ -39,7 +39,7 @@ class ConfigService {
   }
 
   isProduction() {
-    const mode = this.getValue('MODE');
+    const mode = this.getValue('NODE_ENV');
 
     return mode != 'DEV';
   }
@@ -48,7 +48,7 @@ class ConfigService {
     return {
       type: 'postgres',
       host: this.getValue('POSTGRES_HOST'),
-      port: parseInt(this.getValue('POSTGRES_PORT')),
+      port: parseInt(this.getValue('POSTGRES_PORT')!),
       username: this.getValue('POSTGRES_USER'),
       password: this.getValue('POSTGRES_PASSWORD'),
       database: this.getValue('POSTGRES_DATABASE'),
@@ -63,6 +63,9 @@ class ConfigService {
   }
 }
 
-const configService = new ConfigService(process.env).ensureValues(requiredEnvs);
+const configService =
+  process.env.NODE_ENV === 'TEST'
+    ? new ConfigService(process.env)
+    : new ConfigService(process.env).ensureValues(requiredEnvs);
 
 export { configService };

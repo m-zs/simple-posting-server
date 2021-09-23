@@ -11,7 +11,7 @@ import { TrimInputPipe } from './shared/pipes/trim-input.pipe';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  const port = configService.getPort();
+  const port = configService.getPort()!;
 
   const app = await NestFactory.create(AppModule);
   const document = SwaggerModule.createDocument(app, swaggerConfig);
