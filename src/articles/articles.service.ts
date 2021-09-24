@@ -21,8 +21,8 @@ export class ArticlesService {
     return await this.articlesRepository.createArticle(createArticleDto, user);
   }
 
-  findAll() {
-    return `This action returns all articles`;
+  async findAll(): Promise<Article[]> {
+    return await this.articlesRepository.findArticles();
   }
 
   findOne(id: number) {

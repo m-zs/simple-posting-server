@@ -15,6 +15,7 @@ import { AuthUser } from 'src/auth/auth-user.type';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { TransformInterceptorIgnore } from 'src/shared/interceptors/transform.interceptor';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
@@ -38,8 +39,11 @@ export class ArticlesController {
   }
 
   @Get()
-  findAll() {
-    return this.articlesService.findAll();
+  @TransformInterceptorIgnore()
+  @ApiOperation({ summary: 'Get all articles' })
+  @ApiResponse({ type: [Article] })
+  async findAll(): Promise<Article[]> {
+    return await this.articlesService.findAll();
   }
 
   @Get(':id')

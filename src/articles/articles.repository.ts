@@ -16,4 +16,12 @@ export class ArticlesRepository extends Repository<Article> {
 
     return article;
   }
+
+  async findArticles(): Promise<Article[]> {
+    return await this.createQueryBuilder('article')
+      .leftJoin('article.user', 'user')
+      .addSelect('user.id')
+      .addSelect('user.username')
+      .getMany();
+  }
 }
