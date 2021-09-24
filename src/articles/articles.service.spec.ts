@@ -1,19 +1,50 @@
-// import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 
-// import { ArticlesService } from './articles.service';
+import { MockType } from 'src/types';
+import { ArticlesService } from './articles.service';
+import { ArticlesRepository } from './articles.repository';
 
 describe('ArticlesService', () => {
-  // let service: ArticlesService;
+  let articlesService: ArticlesService;
+  let articlesRepository: MockType<ArticlesRepository>;
 
-  // beforeEach(async () => {
-  //   const module: TestingModule = await Test.createTestingModule({
-  //     providers: [ArticlesService],
-  //   }).compile();
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        ArticlesService,
+        {
+          provide: ArticlesRepository,
+          useFactory: jest.fn(() => ({ createArticle: jest.fn() })),
+        },
+      ],
+    }).compile();
 
-  //   service = module.get<ArticlesService>(ArticlesService);
-  // });
+    articlesService = module.get<ArticlesService>(ArticlesService);
+    articlesRepository = module.get(ArticlesRepository);
+  });
 
-  it('should be defined', () => {
-    expect(true).toBe(true);
+  describe('create', () => {
+    it('should call repository and return expected value', async () => {
+      const createArticleDto = {
+        title: 'title',
+        description: 'description',
+      };
+      const authUser = {
+        username: 'user',
+        id: 'id',
+        sessionVersion: '',
+      };
+      const expectedResult = 'value';
+
+      articlesRepository.createArticle?.mockResolvedValueOnce(expectedResult);
+
+      const result = await articlesService.create(createArticleDto, authUser);
+
+      expect(articlesRepository.createArticle).toHaveBeenCalledWith(
+        createArticleDto,
+        authUser,
+      );
+      expect(result).toBe(expectedResult);
+    });
   });
 });
