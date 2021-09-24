@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import * as sanitizeHtml from 'sanitize-html';
 
 import { AuthUser } from 'src/auth/auth-user.type';
 import { ArticlesRepository } from './articles.repository';
@@ -18,7 +19,13 @@ export class ArticlesService {
     createArticleDto: CreateArticleDto,
     user: AuthUser,
   ): Promise<Article> {
-    return await this.articlesRepository.createArticle(createArticleDto, user);
+    return await this.articlesRepository.createArticle(
+      {
+        title: sanitizeHtml(createArticleDto.title),
+        description: sanitizeHtml(createArticleDto.description),
+      },
+      user,
+    );
   }
 
   async findAll(): Promise<Article[]> {
@@ -34,9 +41,14 @@ export class ArticlesService {
     updateArticleDto: UpdateArticleDto,
     user: AuthUser,
   ): Promise<boolean> {
+    const { title, description } = updateArticleDto;
+
     return await this.articlesRepository.updateArticle(
       id,
-      updateArticleDto,
+      {
+        ...(title && { title: sanitizeHtml(title) }),
+        ...(description && { description: sanitizeHtml(description) }),
+      },
       user,
     );
   }
