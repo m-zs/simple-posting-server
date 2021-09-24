@@ -3,6 +3,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { ArticlesController } from './articles.controller';
 import { MockType } from 'src/types';
 import { ArticlesService } from './articles.service';
+import { NotFoundException } from '@nestjs/common';
 
 describe('ArticlesController', () => {
   let articlesController: ArticlesController;
@@ -18,6 +19,7 @@ describe('ArticlesController', () => {
             create: jest.fn(),
             findAll: jest.fn(),
             findOne: jest.fn(),
+            update: jest.fn(),
           })),
         },
       ],
@@ -79,6 +81,40 @@ describe('ArticlesController', () => {
 
       expect(articlesService.findOne).toHaveBeenCalledWith(id);
       expect(result).toBe(expectedResult);
+    });
+  });
+
+  describe('update', () => {
+    const id = 'id';
+    const updateArticleDto = { title: 'title', description: 'description' };
+    const authUser = {
+      username: 'user',
+      id: 'id',
+      sessionVersion: '',
+    };
+
+    it('should call service', async () => {
+      const expectedResult = true;
+
+      articlesService.update?.mockResolvedValueOnce(expectedResult);
+
+      await articlesController.update(id, updateArticleDto, authUser);
+
+      expect(articlesService.update).toHaveBeenCalledWith(
+        id,
+        updateArticleDto,
+        authUser,
+      );
+    });
+
+    it('should throw NotFoundException', async () => {
+      const expectedResult = false;
+
+      articlesService.update?.mockResolvedValueOnce(expectedResult);
+
+      await expect(
+        articlesController.update(id, updateArticleDto, authUser),
+      ).rejects.toThrowError(NotFoundException);
     });
   });
 });

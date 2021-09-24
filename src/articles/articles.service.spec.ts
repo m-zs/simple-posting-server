@@ -18,6 +18,7 @@ describe('ArticlesService', () => {
             createArticle: jest.fn(),
             findArticles: jest.fn(),
             findArticle: jest.fn(),
+            updateArticle: jest.fn(),
           })),
         },
       ],
@@ -75,6 +76,34 @@ describe('ArticlesService', () => {
       const result = await articlesService.findOne(id);
 
       expect(articlesRepository.findArticle).toHaveBeenCalledWith(id);
+      expect(result).toBe(expectedResult);
+    });
+  });
+
+  describe('update', () => {
+    it('should call repository and return expected value', async () => {
+      const expectedResult = 'value';
+      const id = 'id';
+      const updateArticleDto = { title: 'title', description: 'description' };
+      const authUser = {
+        username: 'user',
+        id: 'id',
+        sessionVersion: '',
+      };
+
+      articlesRepository.updateArticle?.mockResolvedValueOnce(expectedResult);
+
+      const result = await articlesService.update(
+        id,
+        updateArticleDto,
+        authUser,
+      );
+
+      expect(articlesRepository.updateArticle).toHaveBeenCalledWith(
+        id,
+        updateArticleDto,
+        authUser,
+      );
       expect(result).toBe(expectedResult);
     });
   });
