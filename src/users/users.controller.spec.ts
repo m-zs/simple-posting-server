@@ -1,4 +1,8 @@
-import { Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  Logger,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AuthModule } from 'src/auth/auth.module';
@@ -79,6 +83,14 @@ describe('UsersController', () => {
       const result = await usersController.findUser('');
 
       expect(result).toBe(expectedResult);
+    });
+
+    it('should throw NotFoundException', async () => {
+      usersService.findUser?.mockResolvedValueOnce(null);
+
+      await expect(usersController.findUser('')).rejects.toThrowError(
+        NotFoundException,
+      );
     });
   });
 
