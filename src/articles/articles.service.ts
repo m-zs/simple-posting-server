@@ -29,8 +29,16 @@ export class ArticlesService {
     return await this.articlesRepository.findArticle(id);
   }
 
-  update(id: number, _updateArticleDto: UpdateArticleDto) {
-    return `This action updates a #${id} article`;
+  async update(
+    id: string,
+    updateArticleDto: UpdateArticleDto,
+    user: AuthUser,
+  ): Promise<boolean> {
+    return await this.articlesRepository.updateArticle(
+      id,
+      updateArticleDto,
+      user,
+    );
   }
 
   remove(id: number) {

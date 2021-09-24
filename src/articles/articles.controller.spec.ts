@@ -17,6 +17,7 @@ describe('ArticlesController', () => {
           useFactory: jest.fn(() => ({
             create: jest.fn(),
             findAll: jest.fn(),
+            findOne: jest.fn(),
           })),
         },
       ],
@@ -54,7 +55,7 @@ describe('ArticlesController', () => {
     });
   });
 
-  describe('create', () => {
+  describe('findAll', () => {
     it('should call service and return expected value', async () => {
       const expectedResult = 'value';
 
@@ -63,6 +64,20 @@ describe('ArticlesController', () => {
       const result = await articlesController.findAll();
 
       expect(articlesService.findAll).toHaveBeenCalled();
+      expect(result).toBe(expectedResult);
+    });
+  });
+
+  describe('findOne', () => {
+    it('should call service and return expected value', async () => {
+      const expectedResult = 'value';
+      const id = 'id';
+
+      articlesService.findOne?.mockResolvedValueOnce(expectedResult);
+
+      const result = await articlesController.findOne(id);
+
+      expect(articlesService.findOne).toHaveBeenCalledWith(id);
       expect(result).toBe(expectedResult);
     });
   });

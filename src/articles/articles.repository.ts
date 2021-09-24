@@ -1,8 +1,9 @@
 import { AuthUser } from 'src/auth/auth-user.type';
 import { EntityRepository, Repository } from 'typeorm';
 
-import { CreateArticleDto } from './dto/create-article.dto';
 import { Article } from './entities/article.entity';
+import { CreateArticleDto } from './dto/create-article.dto';
+import { UpdateArticleDto } from './dto/update-article.dto';
 
 @EntityRepository(Article)
 export class ArticlesRepository extends Repository<Article> {
@@ -27,5 +28,13 @@ export class ArticlesRepository extends Repository<Article> {
 
   async findArticle(id: string): Promise<Article | undefined> {
     return await this.findOne({ id });
+  }
+
+  async updateArticle(
+    id: string,
+    updateArticleDto: UpdateArticleDto,
+    user: AuthUser,
+  ): Promise<boolean> {
+    return !!(await this.update({ id, user }, updateArticleDto))?.affected;
   }
 }

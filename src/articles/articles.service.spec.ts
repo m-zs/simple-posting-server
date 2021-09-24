@@ -17,6 +17,7 @@ describe('ArticlesService', () => {
           useFactory: jest.fn(() => ({
             createArticle: jest.fn(),
             findArticles: jest.fn(),
+            findArticle: jest.fn(),
           })),
         },
       ],
@@ -60,6 +61,20 @@ describe('ArticlesService', () => {
       const result = await articlesService.findAll();
 
       expect(articlesRepository.findArticles).toHaveBeenCalled();
+      expect(result).toBe(expectedResult);
+    });
+  });
+
+  describe('getOne', () => {
+    it('should call repository and return expected value', async () => {
+      const expectedResult = 'value';
+      const id = 'id';
+
+      articlesRepository.findArticle?.mockResolvedValueOnce(expectedResult);
+
+      const result = await articlesService.findOne(id);
+
+      expect(articlesRepository.findArticle).toHaveBeenCalledWith(id);
       expect(result).toBe(expectedResult);
     });
   });
