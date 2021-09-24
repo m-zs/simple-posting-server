@@ -70,7 +70,7 @@ export class AuthService {
     return this.jwtService.sign(
       { username, id: id },
       {
-        expiresIn: '1h',
+        expiresIn: '7d',
         secret: configService.getValue('JWT_ACCESS_SECRET'),
       },
     );
