@@ -9,11 +9,12 @@ import {
   UseGuards,
   UseInterceptors,
   ConflictException,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+
 import { AuthUser } from 'src/auth/auth-user.type';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
-
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { TransformInterceptorIgnore } from 'src/shared/interceptors/transform.interceptor';
 import { ArticlesService } from './articles.service';
@@ -47,8 +48,13 @@ export class ArticlesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.articlesService.findOne(+id);
+  @TransformInterceptorIgnore()
+  @ApiOperation({ summary: 'Get article by id' })
+  @ApiResponse({ type: Article })
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<Article | undefined> {
+    return await this.articlesService.findOne(id);
   }
 
   @Patch(':id')

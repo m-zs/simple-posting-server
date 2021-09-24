@@ -24,4 +24,8 @@ export class ArticlesRepository extends Repository<Article> {
       .addSelect('user.username')
       .getMany();
   }
+
+  async findArticle(id: string): Promise<Article | undefined> {
+    return await this.findOne({ id });
+  }
 }

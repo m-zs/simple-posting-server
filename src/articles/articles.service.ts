@@ -25,8 +25,8 @@ export class ArticlesService {
     return await this.articlesRepository.findArticles();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} article`;
+  async findOne(id: string): Promise<Article | undefined> {
+    return await this.articlesRepository.findArticle(id);
   }
 
   update(id: number, _updateArticleDto: UpdateArticleDto) {
