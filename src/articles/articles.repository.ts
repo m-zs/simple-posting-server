@@ -5,7 +5,7 @@ import { CreateArticleDto } from './dto/create-article.dto';
 import { Article } from './entities/article.entity';
 
 @EntityRepository(Article)
-export class ArticleRepository extends Repository<Article> {
+export class ArticlesRepository extends Repository<Article> {
   async createArticle(
     createArticleDto: CreateArticleDto,
     user: AuthUser,

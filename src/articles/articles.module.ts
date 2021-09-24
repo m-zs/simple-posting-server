@@ -3,10 +3,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { ArticlesService } from './articles.service';
 import { ArticlesController } from './articles.controller';
-import { ArticleRepository } from './articles.repository';
+import { ArticlesRepository } from './articles.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ArticleRepository])],
+  imports: [TypeOrmModule.forFeature([ArticlesRepository])],
   controllers: [ArticlesController],
   providers: [ArticlesService],
 })
