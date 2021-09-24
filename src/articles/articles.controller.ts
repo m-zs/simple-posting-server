@@ -30,11 +30,11 @@ export class ArticlesController {
   @UseInterceptors(ConflictException)
   @ApiOperation({ summary: 'Create new article' })
   @ApiResponse({ type: Article })
-  create(
+  async create(
     @Body() createArticleDto: CreateArticleDto,
     @GetUser() user: AuthUser,
   ): Promise<Article> {
-    return this.articlesService.create(createArticleDto, user);
+    return await this.articlesService.create(createArticleDto, user);
   }
 
   @Get()
