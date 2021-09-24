@@ -1,21 +1,53 @@
-// import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
 
-// import { ArticlesController } from './articles.controller';
-// import { ArticlesService } from './articles.service';
+import { ArticlesController } from './articles.controller';
+import { MockType } from 'src/types';
+import { ArticlesService } from './articles.service';
 
 describe('ArticlesController', () => {
-  // let controller: ArticlesController;
+  let articlesController: ArticlesController;
+  let articlesService: MockType<ArticlesService>;
 
-  // beforeEach(async () => {
-  //   const module: TestingModule = await Test.createTestingModule({
-  //     controllers: [ArticlesController],
-  //     providers: [ArticlesService],
-  //   }).compile();
+  beforeEach(async () => {
+    const module: TestingModule = await Test.createTestingModule({
+      controllers: [ArticlesController],
+      providers: [
+        {
+          provide: ArticlesService,
+          useFactory: jest.fn(() => ({ create: jest.fn() })),
+        },
+      ],
+    }).compile();
 
-  //   controller = module.get<ArticlesController>(ArticlesController);
-  // });
+    articlesController = module.get<ArticlesController>(ArticlesController);
+    articlesService = module.get(ArticlesService);
+  });
 
-  it('should be defined', () => {
-    expect(true).toBe(true);
+  describe('create', () => {
+    it('should call service and return expected value', async () => {
+      const createArticleDto = {
+        title: 'title',
+        description: 'description',
+      };
+      const authUser = {
+        username: 'user',
+        id: 'id',
+        sessionVersion: '',
+      };
+      const expectedResult = 'value';
+
+      articlesService.create?.mockResolvedValueOnce(expectedResult);
+
+      const result = await articlesController.create(
+        createArticleDto,
+        authUser,
+      );
+
+      expect(articlesService.create).toHaveBeenCalledWith(
+        createArticleDto,
+        authUser,
+      );
+      expect(result).toBe(expectedResult);
+    });
   });
 });
