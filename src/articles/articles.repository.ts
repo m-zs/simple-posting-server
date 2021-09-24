@@ -37,4 +37,8 @@ export class ArticlesRepository extends Repository<Article> {
   ): Promise<boolean> {
     return !!(await this.update({ id, user }, updateArticleDto))?.affected;
   }
+
+  async deleteArticle(id: string, user: AuthUser): Promise<boolean> {
+    return !!(await this.delete({ id, user }))?.affected;
+  }
 }

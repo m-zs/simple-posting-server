@@ -58,7 +58,13 @@ export class ArticlesController {
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
   ): Promise<Article | undefined> {
-    return await this.articlesService.findOne(id);
+    const article = await this.articlesService.findOne(id);
+
+    if (!article) {
+      throw new NotFoundException();
+    }
+
+    return article;
   }
 
   @Patch(':id')
@@ -77,7 +83,16 @@ export class ArticlesController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.articlesService.remove(+id);
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Delete article' })
+  @ApiParam({ name: 'id', description: 'Article id' })
+  @HttpCode(204)
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+    @GetUser() user: AuthUser,
+  ): Promise<void> {
+    if (!(await this.articlesService.remove(id, user))) {
+      throw new NotFoundException();
+    }
   }
 }
