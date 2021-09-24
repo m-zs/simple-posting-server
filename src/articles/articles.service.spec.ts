@@ -14,7 +14,10 @@ describe('ArticlesService', () => {
         ArticlesService,
         {
           provide: ArticlesRepository,
-          useFactory: jest.fn(() => ({ createArticle: jest.fn() })),
+          useFactory: jest.fn(() => ({
+            createArticle: jest.fn(),
+            findArticles: jest.fn(),
+          })),
         },
       ],
     }).compile();
@@ -44,6 +47,19 @@ describe('ArticlesService', () => {
         createArticleDto,
         authUser,
       );
+      expect(result).toBe(expectedResult);
+    });
+  });
+
+  describe('getAll', () => {
+    it('should call repository and return expected value', async () => {
+      const expectedResult = 'value';
+
+      articlesRepository.findArticles?.mockResolvedValueOnce(expectedResult);
+
+      const result = await articlesService.findAll();
+
+      expect(articlesRepository.findArticles).toHaveBeenCalled();
       expect(result).toBe(expectedResult);
     });
   });
