@@ -82,6 +82,14 @@ describe('ArticlesController', () => {
       expect(articlesService.findOne).toHaveBeenCalledWith(id);
       expect(result).toBe(expectedResult);
     });
+
+    it('should throw NotFoundException', async () => {
+      articlesService.findOne?.mockResolvedValueOnce(null);
+
+      await expect(articlesController.findOne('')).rejects.toThrowError(
+        NotFoundException,
+      );
+    });
   });
 
   describe('update', () => {
