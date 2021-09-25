@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import sanitizeHtml from 'sanitize-html';
 
 import { AuthUser } from 'src/auth/auth-user.type';
 import { CommentsRepository } from './comments.repository';
@@ -18,7 +19,13 @@ export class CommentsService {
     createCommentDto: CreateCommentDto,
     user: AuthUser,
   ): Promise<Comment> {
-    return await this.commentsRepository.createComment(createCommentDto, user);
+    return await this.commentsRepository.createComment(
+      {
+        ...createCommentDto,
+        description: sanitizeHtml(createCommentDto.description),
+      },
+      user,
+    );
   }
 
   findAll() {
