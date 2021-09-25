@@ -1,14 +1,17 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
+import { Article } from 'src/articles/entities/article.entity';
+import { User } from 'src/users/entities/user.entity';
 
 @Entity()
 export class Comment {
@@ -35,4 +38,11 @@ export class Comment {
   @Exclude({ toPlainOnly: true })
   @ManyToOne((_type) => User, (user) => user.comments)
   user: User;
+
+  @ManyToOne((_type) => Article, (article) => article.comments)
+  @JoinColumn()
+  article: Article;
+
+  @Column()
+  articleId: Article['id'];
 }

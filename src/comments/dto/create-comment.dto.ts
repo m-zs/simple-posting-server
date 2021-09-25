@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsUUID, MaxLength, MinLength, IsOptional } from 'class-validator';
 
+import { Article } from 'src/articles/entities/article.entity';
+
 export class CreateCommentDto {
   @ApiProperty()
   @MinLength(2)
@@ -14,5 +16,5 @@ export class CreateCommentDto {
 
   @ApiProperty()
   @IsUUID()
-  article: string;
+  articleId: Article['id'];
 }
