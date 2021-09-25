@@ -7,6 +7,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AuthUser } from './auth-user.type';
 
@@ -16,6 +17,7 @@ import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
 
 @Controller('auth')
+@ApiTags('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 

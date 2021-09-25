@@ -1,6 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
+import { Article } from 'src/articles/entities/article.entity';
 
 @Entity()
 export class User {
@@ -13,6 +15,7 @@ export class User {
   username: string;
 
   @ApiProperty()
+  @Exclude({ toPlainOnly: true })
   @Column({ unique: true })
   email: string;
 
@@ -24,4 +27,7 @@ export class User {
   @Exclude({ toPlainOnly: true })
   @Column({ nullable: true })
   sessionVersion: string;
+
+  @OneToMany((_type) => Article, (article) => article.user)
+  articles: Article[];
 }

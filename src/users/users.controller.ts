@@ -11,6 +11,7 @@ import {
   UseGuards,
   UnauthorizedException,
   ParseUUIDPipe,
+  NotFoundException,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -49,7 +50,13 @@ export class UsersController {
   @ApiParam({ name: 'id', description: 'User id' })
   @ApiResponse({ type: User })
   async findUser(@Param('id', ParseUUIDPipe) id: string): Promise<User> {
-    return await this.usersService.findUser(id);
+    const user = await this.usersService.findUser(id);
+
+    if (!user) {
+      throw new NotFoundException();
+    }
+
+    return user;
   }
 
   @Patch(':id')
