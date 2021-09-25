@@ -1,14 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import sanitizeHtml from 'sanitize-html';
 
 import { MockType } from 'src/types';
 import { ArticlesService } from './articles.service';
 import { ArticlesRepository } from './articles.repository';
+
+jest.mock('sanitize-html');
 
 describe('ArticlesService', () => {
   let articlesService: ArticlesService;
   let articlesRepository: MockType<ArticlesRepository>;
 
   beforeEach(async () => {
+    jest.clearAllMocks();
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         ArticlesService,
@@ -41,10 +46,12 @@ describe('ArticlesService', () => {
       };
       const expectedResult = 'value';
 
+      (sanitizeHtml as unknown as jest.Mock).mockImplementation((val) => val);
       articlesRepository.createArticle?.mockResolvedValueOnce(expectedResult);
 
       const result = await articlesService.create(createArticleDto, authUser);
 
+      expect(sanitizeHtml).toHaveBeenCalledTimes(2);
       expect(articlesRepository.createArticle).toHaveBeenCalledWith(
         createArticleDto,
         authUser,
@@ -91,6 +98,7 @@ describe('ArticlesService', () => {
         sessionVersion: '',
       };
 
+      (sanitizeHtml as unknown as jest.Mock).mockImplementation((val) => val);
       articlesRepository.updateArticle?.mockResolvedValueOnce(expectedResult);
 
       const result = await articlesService.update(
@@ -99,6 +107,7 @@ describe('ArticlesService', () => {
         authUser,
       );
 
+      expect(sanitizeHtml).toHaveBeenCalledTimes(2);
       expect(articlesRepository.updateArticle).toHaveBeenCalledWith(
         id,
         updateArticleDto,
