@@ -1,19 +1,57 @@
-// import { Test, TestingModule } from '@nestjs/testing';
+import { Test, TestingModule } from '@nestjs/testing';
+import sanitizeHtml from 'sanitize-html';
 
-// import { CommentsService } from './comments.service';
+import { MockType } from 'src/types';
+import { CommentsRepository } from './comments.repository';
+import { CommentsService } from './comments.service';
+
+jest.mock('sanitize-html');
 
 describe('CommentsService', () => {
-  // let service: CommentsService;
+  let commentsService: CommentsService;
+  let commentsRepository: MockType<CommentsRepository>;
 
-  // beforeEach(async () => {
-  //   const module: TestingModule = await Test.createTestingModule({
-  //     providers: [CommentsService],
-  //   }).compile();
+  beforeEach(async () => {
+    jest.clearAllMocks();
 
-  //   service = module.get<CommentsService>(CommentsService);
-  // });
+    const module: TestingModule = await Test.createTestingModule({
+      providers: [
+        CommentsService,
+        {
+          provide: CommentsRepository,
+          useFactory: jest.fn(() => ({ createComment: jest.fn() })),
+        },
+      ],
+    }).compile();
 
-  it('should be defined', () => {
-    expect(true).toBe(true);
+    commentsService = module.get<CommentsService>(CommentsService);
+    commentsRepository = module.get(CommentsRepository);
+  });
+
+  describe('create', () => {
+    it('should call repository and return expected value', async () => {
+      const createCommentDto = {
+        description: 'title',
+        articleId: 'id',
+      };
+      const authUser = {
+        username: 'user',
+        id: 'id',
+        sessionVersion: '',
+      };
+      const expectedResult = 'value';
+
+      (sanitizeHtml as unknown as jest.Mock).mockImplementation((val) => val);
+      commentsRepository.createComment?.mockResolvedValueOnce(expectedResult);
+
+      const result = await commentsService.create(createCommentDto, authUser);
+
+      expect(sanitizeHtml).toHaveBeenCalled();
+      expect(commentsRepository.createComment).toHaveBeenCalledWith(
+        createCommentDto,
+        authUser,
+      );
+      expect(result).toBe(expectedResult);
+    });
   });
 });

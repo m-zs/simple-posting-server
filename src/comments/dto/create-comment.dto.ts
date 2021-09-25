@@ -12,7 +12,7 @@ export class CreateCommentDto {
   @ApiProperty()
   @IsOptional()
   @IsUUID()
-  respondTo: string;
+  respondTo?: string;
 
   @ApiProperty()
   @IsUUID()
