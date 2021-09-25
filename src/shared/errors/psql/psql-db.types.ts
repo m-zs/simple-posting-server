@@ -1,3 +1,4 @@
 export enum DB_ERRORS {
   DUPLICATE = '23505',
+  FOREIGN_MISSING = '23503',
 }

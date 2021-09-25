@@ -8,7 +8,6 @@ import {
   Delete,
   UseGuards,
   UseInterceptors,
-  ConflictException,
   ParseUUIDPipe,
   NotFoundException,
   HttpCode,
@@ -18,6 +17,7 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthUser } from 'src/auth/auth-user.type';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { PsqlErrorInterceptor } from 'src/shared/interceptors/psql-error.interceptor';
 import { TransformInterceptorIgnore } from 'src/shared/interceptors/transform.interceptor';
 import { ValidatePayloadExistsPipe } from 'src/shared/pipes/validate-payload-exist.pipe';
 import { ArticlesService } from './articles.service';
@@ -32,7 +32,7 @@ export class ArticlesController {
 
   @Post()
   @UseGuards(JwtGuard)
-  @UseInterceptors(ConflictException)
+  @UseInterceptors(PsqlErrorInterceptor)
   @ApiOperation({ summary: 'Create new article' })
   @ApiResponse({ type: Article })
   async create(

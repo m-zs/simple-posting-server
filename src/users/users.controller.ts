@@ -16,7 +16,7 @@ import {
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { ValidatePayloadExistsPipe } from 'src/shared/pipes/validate-payload-exist.pipe';
-import { ConflictInterceptor } from 'src/shared/interceptors/conflict.interceptor';
+import { PsqlErrorInterceptor } from 'src/shared/interceptors/psql-error.interceptor';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { AuthUser } from 'src/auth/auth-user.type';
@@ -31,7 +31,7 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @UseInterceptors(ConflictInterceptor)
+  @UseInterceptors(PsqlErrorInterceptor)
   @ApiOperation({ summary: 'Create new user' })
   @HttpCode(204)
   async createUser(@Body() createUserDto: CreateUserDto): Promise<void> {
@@ -63,7 +63,7 @@ export class UsersController {
   @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Update user data' })
   @ApiParam({ name: 'id', description: 'User id' })
-  @UseInterceptors(ConflictInterceptor)
+  @UseInterceptors(PsqlErrorInterceptor)
   @HttpCode(204)
   async updateUser(
     @Param('id', ParseUUIDPipe) id: string,
