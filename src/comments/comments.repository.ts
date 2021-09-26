@@ -16,4 +16,8 @@ export class CommentsRepository extends Repository<Comment> {
 
     return comment;
   }
+
+  async findComment(id: string): Promise<Comment | void> {
+    return await this.findOne({ id });
+  }
 }

@@ -8,8 +8,10 @@ import {
   Delete,
   UseGuards,
   UseInterceptors,
+  ParseUUIDPipe,
+  NotFoundException,
 } from '@nestjs/common';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthUser } from 'src/auth/auth-user.type';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 
@@ -37,14 +39,20 @@ export class CommentsController {
     return await this.commentsService.create(createCommentDto, user);
   }
 
-  @Get()
-  findAll() {
-    return this.commentsService.findAll();
-  }
-
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.commentsService.findOne(+id);
+  @ApiOperation({ summary: 'Find comment by id' })
+  @ApiParam({ name: 'id', description: 'Comment id' })
+  @ApiResponse({ type: Comment })
+  async findOne(
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<Comment | void> {
+    const comment = await this.commentsService.findOne(id);
+
+    if (!comment) {
+      throw new NotFoundException();
+    }
+
+    return comment;
   }
 
   @Patch(':id')

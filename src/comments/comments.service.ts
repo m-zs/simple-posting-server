@@ -28,12 +28,8 @@ export class CommentsService {
     );
   }
 
-  findAll() {
-    return `This action returns all comments`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} comment`;
+  async findOne(id: string): Promise<Comment | void> {
+    return await this.commentsRepository.findComment(id);
   }
 
   update(id: number, _updateCommentDto: UpdateCommentDto) {
