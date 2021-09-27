@@ -18,12 +18,18 @@ export class ArticlesRepository extends Repository<Article> {
     return article;
   }
 
-  async findArticles(): Promise<Article[]> {
-    return await this.createQueryBuilder('article')
+  async findArticles(withComments?: boolean): Promise<Article[]> {
+    const builder = this.createQueryBuilder('article')
       .leftJoin('article.user', 'user')
-      .addSelect('user.id')
-      .addSelect('user.username')
-      .getMany();
+      .addSelect('user.id');
+
+    if (withComments) {
+      builder
+        .addSelect('user.username')
+        .leftJoinAndSelect('article.comments', 'comment');
+    }
+
+    return await builder.getMany();
   }
 
   async findArticle(id: string): Promise<Article | undefined> {
