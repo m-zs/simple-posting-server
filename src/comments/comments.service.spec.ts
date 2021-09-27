@@ -39,17 +39,23 @@ describe('CommentsService', () => {
         id: 'id',
         sessionVersion: '',
       };
+      const article = 'id';
       const expectedResult = 'value';
 
       (sanitizeHtml as unknown as jest.Mock).mockImplementation((val) => val);
       commentsRepository.createComment?.mockResolvedValueOnce(expectedResult);
 
-      const result = await commentsService.create(createCommentDto, authUser);
+      const result = await commentsService.createForArticle(
+        createCommentDto,
+        authUser,
+        article,
+      );
 
       expect(sanitizeHtml).toHaveBeenCalled();
       expect(commentsRepository.createComment).toHaveBeenCalledWith(
         createCommentDto,
         authUser,
+        article,
       );
       expect(result).toBe(expectedResult);
     });

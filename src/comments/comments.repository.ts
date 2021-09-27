@@ -1,6 +1,6 @@
-import { AuthUser } from 'src/auth/auth-user.type';
 import { EntityRepository, Repository } from 'typeorm';
 
+import { AuthUser } from 'src/auth/auth-user.type';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { Comment } from './entities/comment.entity';
 
@@ -9,8 +9,9 @@ export class CommentsRepository extends Repository<Comment> {
   async createComment(
     createCommentDto: CreateCommentDto,
     user: AuthUser,
+    articleId: string,
   ): Promise<Comment> {
-    const comment = this.create({ ...createCommentDto, user });
+    const comment = this.create({ ...createCommentDto, user, articleId });
 
     await this.save(comment);
 

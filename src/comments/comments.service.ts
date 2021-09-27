@@ -15,9 +15,10 @@ export class CommentsService {
     private readonly commentsRepository: CommentsRepository,
   ) {}
 
-  async create(
+  async createForArticle(
     createCommentDto: CreateCommentDto,
     user: AuthUser,
+    articleId: string,
   ): Promise<Comment> {
     return await this.commentsRepository.createComment(
       {
@@ -25,6 +26,7 @@ export class CommentsService {
         description: sanitizeHtml(createCommentDto.description),
       },
       user,
+      articleId,
     );
   }
 
