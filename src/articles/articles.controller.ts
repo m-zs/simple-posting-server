@@ -100,9 +100,9 @@ export class ArticlesController {
   @ApiOperation({ summary: 'Create new comment for article' })
   @ApiResponse({ type: Comment })
   async createComment(
-    @Param('id', ParseUUIDPipe) id: string,
     @Body() createCommentDto: CreateCommentDto,
     @GetUser() user: AuthUser,
+    @Param('id', ParseUUIDPipe) id: string,
   ): Promise<Comment> {
     return await this.articlesService.createComment(createCommentDto, user, id);
   }

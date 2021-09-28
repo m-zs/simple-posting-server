@@ -8,6 +8,11 @@ import { NotFoundException } from '@nestjs/common';
 describe('ArticlesController', () => {
   let articlesController: ArticlesController;
   let articlesService: MockType<ArticlesService>;
+  const authUser = {
+    username: 'user',
+    id: 'id',
+    sessionVersion: '',
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,6 +25,7 @@ describe('ArticlesController', () => {
             findAll: jest.fn(),
             findOne: jest.fn(),
             update: jest.fn(),
+            createComment: jest.fn(),
           })),
         },
       ],
@@ -34,11 +40,6 @@ describe('ArticlesController', () => {
       const createArticleDto = {
         title: 'title',
         description: 'description',
-      };
-      const authUser = {
-        username: 'user',
-        id: 'id',
-        sessionVersion: '',
       };
       const expectedResult = 'value';
 
@@ -95,11 +96,6 @@ describe('ArticlesController', () => {
   describe('update', () => {
     const id = 'id';
     const updateArticleDto = { title: 'title', description: 'description' };
-    const authUser = {
-      username: 'user',
-      id: 'id',
-      sessionVersion: '',
-    };
 
     it('should call service', async () => {
       const expectedResult = true;
@@ -123,6 +119,29 @@ describe('ArticlesController', () => {
       await expect(
         articlesController.update(id, updateArticleDto, authUser),
       ).rejects.toThrowError(NotFoundException);
+    });
+  });
+
+  describe('createComment', () => {
+    it('should call service and return expected value', async () => {
+      const expectedResult = 'value';
+      const id = 'id';
+      const createCommentDto = { description: 'desc' };
+
+      articlesService.createComment?.mockResolvedValueOnce(expectedResult);
+
+      const result = await articlesController.createComment(
+        createCommentDto,
+        authUser,
+        id,
+      );
+
+      expect(articlesService.createComment).toHaveBeenCalledWith(
+        createCommentDto,
+        authUser,
+        id,
+      );
+      expect(result).toBe(expectedResult);
     });
   });
 });

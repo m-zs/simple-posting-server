@@ -12,6 +12,12 @@ jest.mock('sanitize-html');
 describe('ArticlesService', () => {
   let articlesService: ArticlesService;
   let articlesRepository: MockType<ArticlesRepository>;
+  let commentsService: MockType<CommentsService>;
+  const authUser = {
+    username: 'user',
+    id: 'id',
+    sessionVersion: '',
+  };
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -43,6 +49,7 @@ describe('ArticlesService', () => {
 
     articlesService = module.get<ArticlesService>(ArticlesService);
     articlesRepository = module.get(ArticlesRepository);
+    commentsService = module.get(CommentsService);
   });
 
   describe('create', () => {
@@ -50,11 +57,6 @@ describe('ArticlesService', () => {
       const createArticleDto = {
         title: 'title',
         description: 'description',
-      };
-      const authUser = {
-        username: 'user',
-        id: 'id',
-        sessionVersion: '',
       };
       const expectedResult = 'value';
 
@@ -104,11 +106,6 @@ describe('ArticlesService', () => {
       const expectedResult = 'value';
       const id = 'id';
       const updateArticleDto = { title: 'title', description: 'description' };
-      const authUser = {
-        username: 'user',
-        id: 'id',
-        sessionVersion: '',
-      };
 
       (sanitizeHtml as unknown as jest.Mock).mockImplementation((val) => val);
       articlesRepository.updateArticle?.mockResolvedValueOnce(expectedResult);
@@ -124,6 +121,29 @@ describe('ArticlesService', () => {
         id,
         updateArticleDto,
         authUser,
+      );
+      expect(result).toBe(expectedResult);
+    });
+  });
+
+  describe('createComment', () => {
+    it('should call service and return expected value', async () => {
+      const expectedResult = 'value';
+      const id = 'id';
+      const createCommentDto = { description: 'desc' };
+
+      commentsService.createForArticle?.mockResolvedValueOnce(expectedResult);
+
+      const result = await articlesService.createComment(
+        createCommentDto,
+        authUser,
+        id,
+      );
+
+      expect(commentsService.createForArticle).toHaveBeenCalledWith(
+        createCommentDto,
+        authUser,
+        id,
       );
       expect(result).toBe(expectedResult);
     });
