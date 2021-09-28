@@ -7,12 +7,16 @@ import { ArticlesRepository } from './articles.repository';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { Article } from './entities/article.entity';
+import { CommentsService } from 'src/comments/comments.service';
+import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
+import { Comment } from 'src/comments/entities/comment.entity';
 
 @Injectable()
 export class ArticlesService {
   constructor(
     @InjectRepository(ArticlesRepository)
     private readonly articlesRepository: ArticlesRepository,
+    private readonly commentsService: CommentsService,
   ) {}
 
   async create(
@@ -55,5 +59,17 @@ export class ArticlesService {
 
   async remove(id: string, user: AuthUser): Promise<boolean> {
     return await this.articlesRepository.deleteArticle(id, user);
+  }
+
+  async createComment(
+    createCommentDto: CreateCommentDto,
+    user: AuthUser,
+    id: string,
+  ): Promise<Comment> {
+    return await this.commentsService.createForArticle(
+      createCommentDto,
+      user,
+      id,
+    );
   }
 }

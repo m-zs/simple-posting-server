@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  UseInterceptors,
   ParseUUIDPipe,
   NotFoundException,
   HttpCode,
@@ -17,7 +16,8 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { AuthUser } from 'src/auth/auth-user.type';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { PsqlErrorInterceptor } from 'src/shared/interceptors/psql-error.interceptor';
+import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
+import { Comment } from 'src/comments/entities/comment.entity';
 import { TransformInterceptorIgnore } from 'src/shared/interceptors/transform.interceptor';
 import { ValidatePayloadExistsPipe } from 'src/shared/pipes/validate-payload-exist.pipe';
 import { ArticlesService } from './articles.service';
@@ -32,7 +32,6 @@ export class ArticlesController {
 
   @Post()
   @UseGuards(JwtGuard)
-  @UseInterceptors(PsqlErrorInterceptor)
   @ApiOperation({ summary: 'Create new article' })
   @ApiResponse({ type: Article })
   async create(
@@ -94,5 +93,17 @@ export class ArticlesController {
     if (!(await this.articlesService.remove(id, user))) {
       throw new NotFoundException();
     }
+  }
+
+  @Post('/:id/comments')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Create new comment for article' })
+  @ApiResponse({ type: Comment })
+  async createComment(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() createCommentDto: CreateCommentDto,
+    @GetUser() user: AuthUser,
+  ): Promise<Comment> {
+    return await this.articlesService.createComment(createCommentDto, user, id);
   }
 }

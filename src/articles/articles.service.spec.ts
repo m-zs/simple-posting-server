@@ -4,6 +4,8 @@ import sanitizeHtml from 'sanitize-html';
 import { MockType } from 'src/types';
 import { ArticlesService } from './articles.service';
 import { ArticlesRepository } from './articles.repository';
+import { CommentsService } from 'src/comments/comments.service';
+import { CommentsModule } from 'src/comments/comments.module';
 
 jest.mock('sanitize-html');
 
@@ -15,6 +17,12 @@ describe('ArticlesService', () => {
     jest.clearAllMocks();
 
     const module: TestingModule = await Test.createTestingModule({
+      imports: [
+        {
+          module: class FakeComments {},
+          providers: [{ provide: CommentsModule, useFactory: jest.fn() }],
+        },
+      ],
       providers: [
         ArticlesService,
         {
@@ -25,6 +33,10 @@ describe('ArticlesService', () => {
             findArticle: jest.fn(),
             updateArticle: jest.fn(),
           })),
+        },
+        {
+          provide: CommentsService,
+          useFactory: jest.fn(() => ({ createForArticle: jest.fn() })),
         },
       ],
     }).compile();
