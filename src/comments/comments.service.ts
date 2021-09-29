@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import sanitizeHtml from 'sanitize-html';
 
@@ -34,8 +34,20 @@ export class CommentsService {
     return await this.commentsRepository.findComment(id);
   }
 
-  update(id: number, _updateCommentDto: UpdateCommentDto) {
-    return `This action updates a #${id} comment`;
+  async update(
+    id: string,
+    updateCommentDto: UpdateCommentDto,
+    user: AuthUser,
+  ): Promise<boolean> {
+    if (!(await this.findOne(id))) {
+      throw new NotFoundException();
+    }
+
+    return await this.commentsRepository.updateComment(
+      id,
+      updateCommentDto,
+      user,
+    );
   }
 
   remove(id: number) {

@@ -7,11 +7,17 @@ import {
   Delete,
   ParseUUIDPipe,
   NotFoundException,
+  UseGuards,
+  HttpCode,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
+import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { AuthUser } from 'src/auth/auth-user.type';
+import { GetUser } from 'src/auth/decorators/get-user.decorator';
+import { ValidatePayloadExistsPipe } from 'src/shared/pipes/validate-payload-exist.pipe';
 import { CommentsService } from './comments.service';
-
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Comment } from './entities/comment.entity';
 
@@ -37,8 +43,18 @@ export class CommentsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommentDto: UpdateCommentDto) {
-    return this.commentsService.update(+id, updateCommentDto);
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Update comment' })
+  @ApiParam({ name: 'commentId', description: 'Comment id' })
+  @HttpCode(204)
+  async update(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body(new ValidatePayloadExistsPipe()) updateCommentDto: UpdateCommentDto,
+    @GetUser() user: AuthUser,
+  ): Promise<void> {
+    if (!(await this.commentsService.update(id, updateCommentDto, user))) {
+      throw new ForbiddenException();
+    }
   }
 
   @Delete(':id')
