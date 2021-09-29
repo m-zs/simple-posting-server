@@ -1,3 +1,4 @@
+import { NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { MockType } from 'src/types';
@@ -15,7 +16,7 @@ describe('CommentsController', () => {
         {
           provide: CommentsService,
           useFactory: jest.fn(() => ({
-            create: jest.fn(),
+            findOne: jest.fn(),
           })),
         },
       ],
@@ -30,31 +31,25 @@ describe('CommentsController', () => {
     expect(commentsService).toBeDefined();
   });
 
-  // describe('create', () => {
-  //   it('should call service and return expected value', async () => {
-  //     const createCommentDto = {
-  //       articleId: 'id',
-  //       description: 'description',
-  //     };
-  //     const authUser = {
-  //       username: 'user',
-  //       id: 'id',
-  //       sessionVersion: '',
-  //     };
-  //     const expectedResult = 'value';
+  describe('findOne', () => {
+    it('should call service and return expected value', async () => {
+      const id = 'id';
+      const expectedResult = 'value';
 
-  //     commentsService.create?.mockResolvedValueOnce(expectedResult);
+      commentsService.findOne?.mockResolvedValueOnce(expectedResult);
 
-  //     const result = await commentsController.create(
-  //       createCommentDto,
-  //       authUser,
-  //     );
+      const result = await commentsController.findOne(id);
 
-  //     expect(commentsService.create).toHaveBeenCalledWith(
-  //       createCommentDto,
-  //       authUser,
-  //     );
-  //     expect(result).toBe(expectedResult);
-  //   });
-  // });
+      expect(commentsService.findOne).toHaveBeenCalledWith(id);
+      expect(result).toBe(expectedResult);
+    });
+
+    it('should throw NotFoundException', async () => {
+      commentsService.findOne?.mockResolvedValueOnce(null);
+
+      await expect(commentsController.findOne('')).rejects.toThrowError(
+        NotFoundException,
+      );
+    });
+  });
 });
