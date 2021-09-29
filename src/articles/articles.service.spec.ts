@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundException } from '@nestjs/common';
 import sanitizeHtml from 'sanitize-html';
 
 import { MockType } from 'src/types';
@@ -6,6 +7,7 @@ import { ArticlesService } from './articles.service';
 import { ArticlesRepository } from './articles.repository';
 import { CommentsService } from 'src/comments/comments.service';
 import { CommentsModule } from 'src/comments/comments.module';
+import { Article } from './entities/article.entity';
 
 jest.mock('sanitize-html');
 
@@ -102,13 +104,16 @@ describe('ArticlesService', () => {
   });
 
   describe('update', () => {
-    it('should call repository and return expected value', async () => {
-      const expectedResult = 'value';
-      const id = 'id';
-      const updateArticleDto = { title: 'title', description: 'description' };
+    const expectedResult = 'value';
+    const id = 'id';
+    const updateArticleDto = { title: 'title', description: 'description' };
 
+    it('should call repository and return expected value', async () => {
       (sanitizeHtml as unknown as jest.Mock).mockImplementation((val) => val);
       articlesRepository.updateArticle?.mockResolvedValueOnce(expectedResult);
+      jest
+        .spyOn(articlesService, 'findOne')
+        .mockResolvedValueOnce({} as Article);
 
       const result = await articlesService.update(
         id,
@@ -116,6 +121,7 @@ describe('ArticlesService', () => {
         authUser,
       );
 
+      expect(articlesService.findOne).toHaveBeenCalledWith(id);
       expect(sanitizeHtml).toHaveBeenCalledTimes(2);
       expect(articlesRepository.updateArticle).toHaveBeenCalledWith(
         id,
@@ -123,6 +129,17 @@ describe('ArticlesService', () => {
         authUser,
       );
       expect(result).toBe(expectedResult);
+    });
+
+    it('should call findOne and throw NotFoundException when article is not found', async () => {
+      jest.spyOn(articlesService, 'findOne').mockResolvedValueOnce(undefined);
+
+      await expect(
+        articlesService.update(id, updateArticleDto, authUser),
+      ).rejects.toThrowError(NotFoundException);
+
+      expect(articlesService.findOne).toHaveBeenCalledWith(id);
+      expect(sanitizeHtml).toHaveBeenCalledTimes(0);
     });
   });
 

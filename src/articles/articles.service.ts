@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import sanitizeHtml from 'sanitize-html';
 
@@ -36,7 +36,7 @@ export class ArticlesService {
     return await this.articlesRepository.findArticles();
   }
 
-  async findOne(id: string): Promise<Article | undefined> {
+  async findOne(id: string): Promise<Article | void> {
     return await this.articlesRepository.findArticle(id);
   }
 
@@ -45,6 +45,10 @@ export class ArticlesService {
     updateArticleDto: UpdateArticleDto,
     user: AuthUser,
   ): Promise<boolean> {
+    if (!(await this.findOne(id))) {
+      throw new NotFoundException();
+    }
+
     const { title, description } = updateArticleDto;
 
     return await this.articlesRepository.updateArticle(
@@ -58,6 +62,10 @@ export class ArticlesService {
   }
 
   async remove(id: string, user: AuthUser): Promise<boolean> {
+    if (!(await this.findOne(id))) {
+      throw new NotFoundException();
+    }
+
     return await this.articlesRepository.deleteArticle(id, user);
   }
 

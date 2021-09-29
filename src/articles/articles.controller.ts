@@ -10,6 +10,7 @@ import {
   ParseUUIDPipe,
   NotFoundException,
   HttpCode,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -77,7 +78,7 @@ export class ArticlesController {
     @GetUser() user: AuthUser,
   ): Promise<void> {
     if (!(await this.articlesService.update(id, updateArticleDto, user))) {
-      throw new NotFoundException();
+      throw new ForbiddenException();
     }
   }
 
@@ -91,7 +92,7 @@ export class ArticlesController {
     @GetUser() user: AuthUser,
   ): Promise<void> {
     if (!(await this.articlesService.remove(id, user))) {
-      throw new NotFoundException();
+      throw new ForbiddenException();
     }
   }
 

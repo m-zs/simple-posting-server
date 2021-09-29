@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
 import { ArticlesController } from './articles.controller';
 import { MockType } from 'src/types';
 import { ArticlesService } from './articles.service';
-import { NotFoundException } from '@nestjs/common';
 
 describe('ArticlesController', () => {
   let articlesController: ArticlesController;
@@ -111,14 +111,14 @@ describe('ArticlesController', () => {
       );
     });
 
-    it('should throw NotFoundException', async () => {
+    it('should throw ForbiddenException', async () => {
       const expectedResult = false;
 
       articlesService.update?.mockResolvedValueOnce(expectedResult);
 
       await expect(
         articlesController.update(id, updateArticleDto, authUser),
-      ).rejects.toThrowError(NotFoundException);
+      ).rejects.toThrowError(ForbiddenException);
     });
   });
 
