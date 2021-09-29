@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { MockType } from 'src/types';
@@ -8,6 +8,11 @@ import { CommentsService } from './comments.service';
 describe('CommentsController', () => {
   let commentsController: CommentsController;
   let commentsService: MockType<CommentsService>;
+  const authUser = {
+    username: 'user',
+    id: 'id',
+    sessionVersion: '',
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -17,6 +22,7 @@ describe('CommentsController', () => {
           provide: CommentsService,
           useFactory: jest.fn(() => ({
             findOne: jest.fn(),
+            update: jest.fn(),
           })),
         },
       ],
@@ -50,6 +56,35 @@ describe('CommentsController', () => {
       await expect(commentsController.findOne('')).rejects.toThrowError(
         NotFoundException,
       );
+    });
+  });
+
+  describe('update', () => {
+    const id = 'id';
+    const updateCommentDto = {};
+
+    it('should call service', async () => {
+      const expectedResult = true;
+
+      commentsService.update?.mockResolvedValueOnce(expectedResult);
+
+      await commentsController.update(id, updateCommentDto, authUser);
+
+      expect(commentsService.update).toHaveBeenCalledWith(
+        id,
+        updateCommentDto,
+        authUser,
+      );
+    });
+
+    it('should throw ForbiddenException', async () => {
+      const expectedResult = false;
+
+      commentsService.update?.mockResolvedValueOnce(expectedResult);
+
+      await expect(
+        commentsController.update(id, updateCommentDto, authUser),
+      ).rejects.toThrowError(ForbiddenException);
     });
   });
 });
