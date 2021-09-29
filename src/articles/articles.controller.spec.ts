@@ -26,6 +26,7 @@ describe('ArticlesController', () => {
             findOne: jest.fn(),
             update: jest.fn(),
             createComment: jest.fn(),
+            remove: jest.fn(),
           })),
         },
       ],
@@ -98,9 +99,7 @@ describe('ArticlesController', () => {
     const updateArticleDto = { title: 'title', description: 'description' };
 
     it('should call service', async () => {
-      const expectedResult = true;
-
-      articlesService.update?.mockResolvedValueOnce(expectedResult);
+      articlesService.update?.mockResolvedValueOnce(true);
 
       await articlesController.update(id, updateArticleDto, authUser);
 
@@ -112,9 +111,7 @@ describe('ArticlesController', () => {
     });
 
     it('should throw ForbiddenException', async () => {
-      const expectedResult = false;
-
-      articlesService.update?.mockResolvedValueOnce(expectedResult);
+      articlesService.update?.mockResolvedValueOnce(false);
 
       await expect(
         articlesController.update(id, updateArticleDto, authUser),
@@ -142,6 +139,27 @@ describe('ArticlesController', () => {
         id,
       );
       expect(result).toBe(expectedResult);
+    });
+  });
+
+  describe('remove', () => {
+    const id = 'id';
+
+    it('should throw ForbiddenException', async () => {
+      articlesService.remove?.mockResolvedValueOnce(false);
+
+      await expect(
+        articlesController.remove(id, authUser),
+      ).rejects.toThrowError(ForbiddenException);
+      expect(articlesService.remove).toHaveBeenCalledWith(id, authUser);
+    });
+
+    it('should call service', async () => {
+      articlesService.remove?.mockResolvedValueOnce(true);
+
+      await articlesController.remove(id, authUser);
+
+      expect(articlesService.remove).toHaveBeenCalledWith(id, authUser);
     });
   });
 });

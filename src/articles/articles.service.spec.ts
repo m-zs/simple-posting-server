@@ -20,6 +20,8 @@ describe('ArticlesService', () => {
     id: 'id',
     sessionVersion: '',
   };
+  const expectedResult = 'value';
+  const id = 'id';
 
   beforeEach(async () => {
     jest.clearAllMocks();
@@ -40,6 +42,7 @@ describe('ArticlesService', () => {
             findArticles: jest.fn(),
             findArticle: jest.fn(),
             updateArticle: jest.fn(),
+            deleteArticle: jest.fn(),
           })),
         },
         {
@@ -60,7 +63,6 @@ describe('ArticlesService', () => {
         title: 'title',
         description: 'description',
       };
-      const expectedResult = 'value';
 
       (sanitizeHtml as unknown as jest.Mock).mockImplementation((val) => val);
       articlesRepository.createArticle?.mockResolvedValueOnce(expectedResult);
@@ -78,8 +80,6 @@ describe('ArticlesService', () => {
 
   describe('getAll', () => {
     it('should call repository and return expected value', async () => {
-      const expectedResult = 'value';
-
       articlesRepository.findArticles?.mockResolvedValueOnce(expectedResult);
 
       const result = await articlesService.findAll();
@@ -91,9 +91,6 @@ describe('ArticlesService', () => {
 
   describe('getOne', () => {
     it('should call repository and return expected value', async () => {
-      const expectedResult = 'value';
-      const id = 'id';
-
       articlesRepository.findArticle?.mockResolvedValueOnce(expectedResult);
 
       const result = await articlesService.findOne(id);
@@ -104,8 +101,6 @@ describe('ArticlesService', () => {
   });
 
   describe('update', () => {
-    const expectedResult = 'value';
-    const id = 'id';
     const updateArticleDto = { title: 'title', description: 'description' };
 
     it('should call repository and return expected value', async () => {
@@ -139,14 +134,13 @@ describe('ArticlesService', () => {
       ).rejects.toThrowError(NotFoundException);
 
       expect(articlesService.findOne).toHaveBeenCalledWith(id);
+      expect(articlesRepository.updateArticle).toHaveBeenCalledTimes(0);
       expect(sanitizeHtml).toHaveBeenCalledTimes(0);
     });
   });
 
   describe('createComment', () => {
     it('should call service and return expected value', async () => {
-      const expectedResult = 'value';
-      const id = 'id';
       const createCommentDto = { description: 'desc' };
 
       commentsService.createForArticle?.mockResolvedValueOnce(expectedResult);
@@ -163,6 +157,35 @@ describe('ArticlesService', () => {
         id,
       );
       expect(result).toBe(expectedResult);
+    });
+  });
+
+  describe('remove', () => {
+    it('should call repository and return expected value', async () => {
+      articlesRepository.deleteArticle?.mockResolvedValueOnce(expectedResult);
+      jest
+        .spyOn(articlesService, 'findOne')
+        .mockResolvedValueOnce({} as Article);
+
+      const result = await articlesService.remove(id, authUser);
+
+      expect(articlesService.findOne).toHaveBeenCalledWith(id);
+      expect(articlesRepository.deleteArticle).toHaveBeenCalledWith(
+        id,
+        authUser,
+      );
+      expect(result).toBe(expectedResult);
+    });
+
+    it('should call findOne and throw NotFoundException when article is not found', async () => {
+      jest.spyOn(articlesService, 'findOne').mockResolvedValueOnce(undefined);
+
+      await expect(articlesService.remove(id, authUser)).rejects.toThrowError(
+        NotFoundException,
+      );
+
+      expect(articlesService.findOne).toHaveBeenCalledWith(id);
+      expect(articlesRepository.deleteArticle).toHaveBeenCalledTimes(0);
     });
   });
 });
