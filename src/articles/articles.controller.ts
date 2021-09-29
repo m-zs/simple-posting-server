@@ -95,7 +95,7 @@ export class ArticlesController {
     }
   }
 
-  @Post('/:id/comments')
+  @Post(':id/comments')
   @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Create new comment for article' })
   @ApiResponse({ type: Comment })
