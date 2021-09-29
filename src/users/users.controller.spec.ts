@@ -1,8 +1,4 @@
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Logger, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AuthModule } from 'src/auth/auth.module';
@@ -109,7 +105,7 @@ describe('UsersController', () => {
       expect(result).toBe(expectedResult);
     });
 
-    it('should throw UnauthorizedException', async () => {
+    it('should throw ForbiddenException', async () => {
       const expectedResult = 'value';
 
       usersService.removeUser?.mockResolvedValueOnce(expectedResult);
@@ -120,7 +116,7 @@ describe('UsersController', () => {
           username: '',
           sessionVersion: '',
         }),
-      ).rejects.toThrowError(UnauthorizedException);
+      ).rejects.toThrowError(ForbiddenException);
     });
   });
 
@@ -143,7 +139,7 @@ describe('UsersController', () => {
       expect(result).toBe(expectedResult);
     });
 
-    it('should throw UnauthorizedException', async () => {
+    it('should throw ForbiddenException', async () => {
       const expectedResult = 'value';
 
       usersService.updateUser?.mockResolvedValueOnce(expectedResult);
@@ -158,7 +154,7 @@ describe('UsersController', () => {
             sessionVersion: '',
           },
         ),
-      ).rejects.toThrowError(UnauthorizedException);
+      ).rejects.toThrowError(ForbiddenException);
     });
   });
 });

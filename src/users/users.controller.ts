@@ -8,9 +8,9 @@ import {
   Delete,
   HttpCode,
   UseGuards,
-  UnauthorizedException,
   ParseUUIDPipe,
   NotFoundException,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
@@ -68,7 +68,7 @@ export class UsersController {
     @GetUser() user: AuthUser,
   ): Promise<void> {
     if (id !== user.id) {
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     }
 
     return this.usersService.updateUser(id, updateUserDto);
@@ -84,7 +84,7 @@ export class UsersController {
     @GetUser() user: AuthUser,
   ): Promise<void> {
     if (id !== user.id) {
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     }
 
     return this.usersService.removeUser(id);
