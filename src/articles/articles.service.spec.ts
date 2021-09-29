@@ -42,7 +42,7 @@ describe('ArticlesService', () => {
             findArticles: jest.fn(),
             findArticle: jest.fn(),
             updateArticle: jest.fn(),
-            deleteArticle: jest.fn(),
+            removeArticle: jest.fn(),
           })),
         },
         {
@@ -162,7 +162,7 @@ describe('ArticlesService', () => {
 
   describe('remove', () => {
     it('should call repository and return expected value', async () => {
-      articlesRepository.deleteArticle?.mockResolvedValueOnce(expectedResult);
+      articlesRepository.removeArticle?.mockResolvedValueOnce(expectedResult);
       jest
         .spyOn(articlesService, 'findOne')
         .mockResolvedValueOnce({} as Article);
@@ -170,7 +170,7 @@ describe('ArticlesService', () => {
       const result = await articlesService.remove(id, authUser);
 
       expect(articlesService.findOne).toHaveBeenCalledWith(id);
-      expect(articlesRepository.deleteArticle).toHaveBeenCalledWith(
+      expect(articlesRepository.removeArticle).toHaveBeenCalledWith(
         id,
         authUser,
       );
@@ -185,7 +185,7 @@ describe('ArticlesService', () => {
       );
 
       expect(articlesService.findOne).toHaveBeenCalledWith(id);
-      expect(articlesRepository.deleteArticle).toHaveBeenCalledTimes(0);
+      expect(articlesRepository.removeArticle).toHaveBeenCalledTimes(0);
     });
   });
 });

@@ -66,7 +66,7 @@ export class ArticlesService {
       throw new NotFoundException();
     }
 
-    return await this.articlesRepository.deleteArticle(id, user);
+    return await this.articlesRepository.removeArticle(id, user);
   }
 
   async createComment(
