@@ -32,6 +32,7 @@ describe('CommentsService', () => {
           useFactory: jest.fn(() => ({
             createComment: jest.fn(),
             updateComment: jest.fn(),
+            findComment: jest.fn(),
           })),
         },
       ],
@@ -104,5 +105,14 @@ describe('CommentsService', () => {
     });
   });
 
-  // describe('findOne', () => {});
+  describe('findOne', () => {
+    it('should call repository and return expected value', async () => {
+      commentsRepository.findComment?.mockResolvedValueOnce(expectedResult);
+
+      const result = await commentsService.findOne(id);
+
+      expect(commentsRepository.findComment).toHaveBeenCalledWith(id);
+      expect(result).toBe(result);
+    });
+  });
 });
