@@ -21,7 +21,8 @@ export class ArticlesRepository extends Repository<Article> {
   async findArticles(withComments?: boolean): Promise<Article[]> {
     const builder = this.createQueryBuilder('article')
       .leftJoin('article.user', 'user')
-      .addSelect('user.id');
+      .addSelect('user.id')
+      .addSelect('user.username');
 
     if (withComments) {
       builder
@@ -32,8 +33,23 @@ export class ArticlesRepository extends Repository<Article> {
     return await builder.getMany();
   }
 
-  async findArticle(id: string): Promise<Article | undefined> {
-    return await this.findOne({ id });
+  async findArticle(
+    id: string,
+    withComments?: boolean,
+  ): Promise<Article | undefined> {
+    const builder = this.createQueryBuilder('article')
+      .leftJoin('article.user', 'user')
+      .addSelect('user.id')
+      .addSelect('user.username')
+      .where({ id });
+
+    if (withComments) {
+      builder
+        .addSelect('user.username')
+        .leftJoinAndSelect('article.comments', 'comment');
+    }
+
+    return await builder.getOne();
   }
 
   async updateArticle(
