@@ -25,6 +25,7 @@ describe('CommentsController', () => {
           useFactory: jest.fn(() => ({
             findOne: jest.fn(),
             update: jest.fn(),
+            remove: jest.fn(),
           })),
         },
       ],
@@ -74,6 +75,30 @@ describe('CommentsController', () => {
       await expect(
         commentsController.update(id, updateCommentDto, authUser),
       ).rejects.toThrowError(ForbiddenException);
+      expect(commentsService.update).toHaveBeenCalledWith(
+        id,
+        updateCommentDto,
+        authUser,
+      );
+    });
+  });
+
+  describe('remove', () => {
+    it('should call service', async () => {
+      commentsService.remove?.mockResolvedValueOnce(true);
+
+      await commentsController.remove(id, authUser);
+
+      expect(commentsService.remove).toHaveBeenCalledWith(id, authUser);
+    });
+
+    it('should throw ForbiddenException', async () => {
+      commentsService.remove?.mockResolvedValueOnce(false);
+
+      await expect(
+        commentsController.remove(id, authUser),
+      ).rejects.toThrowError(ForbiddenException);
+      expect(commentsService.remove).toHaveBeenCalledWith(id, authUser);
     });
   });
 });

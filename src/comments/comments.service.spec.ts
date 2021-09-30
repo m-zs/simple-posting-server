@@ -33,6 +33,7 @@ describe('CommentsService', () => {
             createComment: jest.fn(),
             updateComment: jest.fn(),
             findComment: jest.fn(),
+            removeComment: jest.fn(),
           })),
         },
       ],
@@ -113,6 +114,35 @@ describe('CommentsService', () => {
 
       expect(commentsRepository.findComment).toHaveBeenCalledWith(id);
       expect(result).toBe(result);
+    });
+  });
+
+  describe('remove', () => {
+    it('should call repository and return expected value', async () => {
+      commentsRepository.removeComment?.mockResolvedValueOnce(expectedResult);
+      jest
+        .spyOn(commentsService, 'findOne')
+        .mockResolvedValueOnce({} as Comment);
+
+      const result = await commentsService.remove(id, authUser);
+
+      expect(commentsService.findOne).toHaveBeenCalledWith(id);
+      expect(commentsRepository.removeComment).toHaveBeenCalledWith(
+        id,
+        authUser,
+      );
+      expect(result).toBe(expectedResult);
+    });
+
+    it('should call findOne and throw NotFoundException when comment is not found', async () => {
+      jest.spyOn(commentsService, 'findOne').mockResolvedValueOnce(undefined);
+
+      await expect(commentsService.remove(id, authUser)).rejects.toThrowError(
+        NotFoundException,
+      );
+
+      expect(commentsService.findOne).toHaveBeenCalledWith(id);
+      expect(commentsRepository.removeComment).toHaveBeenCalledTimes(0);
     });
   });
 });
