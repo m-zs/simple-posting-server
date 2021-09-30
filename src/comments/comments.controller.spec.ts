@@ -13,6 +13,8 @@ describe('CommentsController', () => {
     id: 'id',
     sessionVersion: '',
   };
+  const id = 'id';
+  const expectedResult = 'value';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -32,16 +34,8 @@ describe('CommentsController', () => {
     commentsService = module.get(CommentsService);
   });
 
-  it('default', () => {
-    expect(commentsController).toBeDefined();
-    expect(commentsService).toBeDefined();
-  });
-
   describe('findOne', () => {
     it('should call service and return expected value', async () => {
-      const id = 'id';
-      const expectedResult = 'value';
-
       commentsService.findOne?.mockResolvedValueOnce(expectedResult);
 
       const result = await commentsController.findOne(id);
@@ -60,13 +54,10 @@ describe('CommentsController', () => {
   });
 
   describe('update', () => {
-    const id = 'id';
-    const updateCommentDto = {};
+    const updateCommentDto = { description: '' };
 
     it('should call service', async () => {
-      const expectedResult = true;
-
-      commentsService.update?.mockResolvedValueOnce(expectedResult);
+      commentsService.update?.mockResolvedValueOnce(true);
 
       await commentsController.update(id, updateCommentDto, authUser);
 
@@ -78,9 +69,7 @@ describe('CommentsController', () => {
     });
 
     it('should throw ForbiddenException', async () => {
-      const expectedResult = false;
-
-      commentsService.update?.mockResolvedValueOnce(expectedResult);
+      commentsService.update?.mockResolvedValueOnce(false);
 
       await expect(
         commentsController.update(id, updateCommentDto, authUser),

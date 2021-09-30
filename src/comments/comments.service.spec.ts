@@ -68,7 +68,7 @@ describe('CommentsService', () => {
   });
 
   describe('update', () => {
-    const updateCommentDto = {};
+    const updateCommentDto = { description: '' };
 
     it('should call repository and return expected value', async () => {
       commentsRepository.updateComment?.mockResolvedValueOnce(expectedResult);

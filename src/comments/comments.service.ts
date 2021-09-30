@@ -45,7 +45,7 @@ export class CommentsService {
 
     return await this.commentsRepository.updateComment(
       id,
-      updateCommentDto,
+      { description: sanitizeHtml(updateCommentDto.description) },
       user,
     );
   }
