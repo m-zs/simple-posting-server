@@ -11,8 +11,15 @@ import {
   NotFoundException,
   HttpCode,
   ForbiddenException,
+  Query,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { AuthUser } from 'src/auth/auth-user.type';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
@@ -45,20 +52,38 @@ export class ArticlesController {
   @Get()
   @TransformInterceptorIgnore()
   @ApiOperation({ summary: 'Get all articles' })
+  @ApiQuery({
+    name: 'withComments',
+    description: 'Set to "true" to attach comments to response',
+    required: false,
+    example: 'true',
+  })
   @ApiResponse({ type: [Article] })
-  async findAll(): Promise<Article[]> {
-    return await this.articlesService.findAll();
+  async findAll(
+    @Query('withComments') withComments?: string,
+  ): Promise<Article[]> {
+    return await this.articlesService.findAll(withComments === 'true');
   }
 
   @Get(':id')
   @TransformInterceptorIgnore()
   @ApiOperation({ summary: 'Get article by id' })
+  @ApiQuery({
+    name: 'withComments',
+    description: 'Set to "true" to attach comments to response',
+    required: false,
+    example: 'true',
+  })
   @ApiParam({ name: 'id', description: 'Article id' })
   @ApiResponse({ type: Article })
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<Article | undefined> {
-    const article = await this.articlesService.findOne(id);
+    @Query('withComments') withComments?: string,
+  ): Promise<Article | void> {
+    const article = await this.articlesService.findOne(
+      id,
+      withComments === 'true',
+    );
 
     if (!article) {
       throw new NotFoundException();

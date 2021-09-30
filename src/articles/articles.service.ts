@@ -32,12 +32,12 @@ export class ArticlesService {
     );
   }
 
-  async findAll(): Promise<Article[]> {
-    return await this.articlesRepository.findArticles();
+  async findAll(withComments?: boolean): Promise<Article[]> {
+    return await this.articlesRepository.findArticles(withComments);
   }
 
-  async findOne(id: string): Promise<Article | void> {
-    return await this.articlesRepository.findArticle(id);
+  async findOne(id: string, withComments?: boolean): Promise<Article | void> {
+    return await this.articlesRepository.findArticle(id, withComments);
   }
 
   async update(

@@ -95,7 +95,10 @@ describe('ArticlesService', () => {
 
       const result = await articlesService.findOne(id);
 
-      expect(articlesRepository.findArticle).toHaveBeenCalledWith(id);
+      expect(articlesRepository.findArticle).toHaveBeenCalledWith(
+        id,
+        undefined,
+      );
       expect(result).toBe(expectedResult);
     });
   });

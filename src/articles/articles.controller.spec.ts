@@ -13,6 +13,8 @@ describe('ArticlesController', () => {
     id: 'id',
     sessionVersion: '',
   };
+  const expectedResult = 'value';
+  const id = 'id';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -42,7 +44,6 @@ describe('ArticlesController', () => {
         title: 'title',
         description: 'description',
       };
-      const expectedResult = 'value';
 
       articlesService.create?.mockResolvedValueOnce(expectedResult);
 
@@ -61,8 +62,6 @@ describe('ArticlesController', () => {
 
   describe('findAll', () => {
     it('should call service and return expected value', async () => {
-      const expectedResult = 'value';
-
       articlesService.findAll?.mockResolvedValueOnce(expectedResult);
 
       const result = await articlesController.findAll();
@@ -74,14 +73,11 @@ describe('ArticlesController', () => {
 
   describe('findOne', () => {
     it('should call service and return expected value', async () => {
-      const expectedResult = 'value';
-      const id = 'id';
-
       articlesService.findOne?.mockResolvedValueOnce(expectedResult);
 
       const result = await articlesController.findOne(id);
 
-      expect(articlesService.findOne).toHaveBeenCalledWith(id);
+      expect(articlesService.findOne).toHaveBeenCalledWith(id, false);
       expect(result).toBe(expectedResult);
     });
 
@@ -95,7 +91,6 @@ describe('ArticlesController', () => {
   });
 
   describe('update', () => {
-    const id = 'id';
     const updateArticleDto = { title: 'title', description: 'description' };
 
     it('should call service', async () => {
@@ -121,8 +116,6 @@ describe('ArticlesController', () => {
 
   describe('createComment', () => {
     it('should call service and return expected value', async () => {
-      const expectedResult = 'value';
-      const id = 'id';
       const createCommentDto = { description: 'desc' };
 
       articlesService.createComment?.mockResolvedValueOnce(expectedResult);
@@ -143,8 +136,6 @@ describe('ArticlesController', () => {
   });
 
   describe('remove', () => {
-    const id = 'id';
-
     it('should throw ForbiddenException', async () => {
       articlesService.remove?.mockResolvedValueOnce(false);
 
