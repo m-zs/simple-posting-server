@@ -28,6 +28,10 @@ export class CommentsRepository extends Repository<Comment> {
     updateCommentDto: UpdateCommentDto,
     user: AuthUser,
   ): Promise<boolean> {
-    return !!(await this.update({ id, user }, updateCommentDto));
+    return !!(await this.update({ id, user }, updateCommentDto))?.affected;
+  }
+
+  async removeComment(id: string, user: AuthUser): Promise<boolean> {
+    return !!(await this.delete({ id, user }))?.affected;
   }
 }

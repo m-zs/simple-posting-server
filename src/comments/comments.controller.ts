@@ -58,7 +58,16 @@ export class CommentsController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.commentsService.remove(+id);
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Remove comment' })
+  @ApiParam({ name: 'id', description: 'Comment id' })
+  @HttpCode(204)
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+    @GetUser() user: AuthUser,
+  ): Promise<void> {
+    if (!(await this.commentsService.remove(id, user))) {
+      throw new ForbiddenException();
+    }
   }
 }

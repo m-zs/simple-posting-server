@@ -50,7 +50,11 @@ export class CommentsService {
     );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+  async remove(id: string, user: AuthUser): Promise<boolean> {
+    if (!(await this.findOne(id))) {
+      throw new NotFoundException();
+    }
+
+    return await this.commentsRepository.removeComment(id, user);
   }
 }
