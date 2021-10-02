@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import sanitizeHtml from 'sanitize-html';
 
@@ -20,10 +24,16 @@ export class CommentsService {
     user: AuthUser,
     articleId: string,
   ): Promise<Comment> {
+    const { respondTo, description } = createCommentDto;
+
+    if (respondTo && !(await this.findOne(respondTo))) {
+      throw new BadRequestException(`Invalid comment id: ${respondTo}`);
+    }
+
     return await this.commentsRepository.createComment(
       {
-        ...createCommentDto,
-        description: sanitizeHtml(createCommentDto.description),
+        respondTo,
+        description: sanitizeHtml(description),
       },
       user,
       articleId,

@@ -1,4 +1,4 @@
-import { NotFoundException } from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import sanitizeHtml from 'sanitize-html';
 
@@ -44,12 +44,15 @@ describe('CommentsService', () => {
   });
 
   describe('createForArticle', () => {
-    it('should call repository and return expected value', async () => {
-      const createCommentDto = {
-        description: 'title',
-        articleId: 'id',
-      };
+    const createCommentDto = {
+      description: 'title',
+      respondTo: 'uuid',
+    };
 
+    it('should call repository and return expected value', async () => {
+      jest
+        .spyOn(commentsService, 'findOne')
+        .mockResolvedValueOnce({} as Comment);
       (sanitizeHtml as unknown as jest.Mock).mockImplementation((val) => val);
       commentsRepository.createComment?.mockResolvedValueOnce(expectedResult);
 
@@ -59,6 +62,9 @@ describe('CommentsService', () => {
         article,
       );
 
+      expect(commentsService.findOne).toHaveBeenCalledWith(
+        createCommentDto.respondTo,
+      );
       expect(sanitizeHtml).toHaveBeenCalled();
       expect(commentsRepository.createComment).toHaveBeenCalledWith(
         createCommentDto,
@@ -66,6 +72,19 @@ describe('CommentsService', () => {
         article,
       );
       expect(result).toBe(expectedResult);
+    });
+
+    it('should call findOne and throw BadRequestException when comment is not found', async () => {
+      jest.spyOn(commentsService, 'findOne').mockResolvedValueOnce(undefined);
+
+      await expect(
+        commentsService.createForArticle(createCommentDto, authUser, article),
+      ).rejects.toThrowError(BadRequestException);
+
+      expect(commentsService.findOne).toHaveBeenCalledWith(
+        createCommentDto.respondTo,
+      );
+      expect(commentsRepository.createComment).toHaveBeenCalledTimes(0);
     });
   });
 
