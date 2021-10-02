@@ -38,4 +38,4 @@ lerna-debug.log*
 .eslintcache
 
 # client
-client/.next
+/src/client/.next
