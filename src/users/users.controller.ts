@@ -11,9 +11,15 @@ import {
   ParseUUIDPipe,
   NotFoundException,
   ForbiddenException,
+  Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
+import { PaginationResponse } from 'src/shared/decorators/pagination-response.decorator';
+import { PaginationDto } from 'src/shared/dto/pagination.dto';
 import { ValidatePayloadExistsPipe } from 'src/shared/pipes/validate-payload-exist.pipe';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
@@ -36,10 +42,13 @@ export class UsersController {
   }
 
   @Get()
+  @UsePipes(new ValidationPipe({ transform: true }))
   @ApiOperation({ summary: 'Get users' })
-  @ApiResponse({ type: [User] })
-  async findUsers(): Promise<User[]> {
-    return await this.usersService.findUsers();
+  @PaginationResponse(User)
+  async findUsers(
+    @Query() paginationDto: PaginationDto,
+  ): Promise<Pagination<User>> {
+    return await this.usersService.findUsers({ ...paginationDto });
   }
 
   @Get(':id')

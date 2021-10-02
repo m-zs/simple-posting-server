@@ -7,6 +7,7 @@ import { UsersService } from './users.service';
 describe('UsersService', () => {
   let usersService: UsersService;
   let usersRepository: MockType<UsersRepository>;
+  const expectedResult = 'value';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -37,8 +38,6 @@ describe('UsersService', () => {
     };
 
     it('should return expected value', async () => {
-      const expectedResult = 'value';
-
       usersRepository.createUser?.mockResolvedValue(expectedResult);
 
       const result = await usersService.createUser(userData);
@@ -49,12 +48,12 @@ describe('UsersService', () => {
   });
 
   describe('findUsers', () => {
-    it('should return expected value', async () => {
-      const expectedResult = 'value';
+    const paginationDto = { page: 1, limit: 10 };
 
+    it('should return expected value', async () => {
       usersRepository.findUsers?.mockResolvedValueOnce(expectedResult);
 
-      const result = await usersService.findUsers();
+      const result = await usersService.findUsers(paginationDto);
 
       expect(result).toBe(expectedResult);
     });
@@ -62,8 +61,6 @@ describe('UsersService', () => {
 
   describe('findUser', () => {
     it('should return expected value', async () => {
-      const expectedResult = 'value';
-
       usersRepository.findUser?.mockResolvedValueOnce(expectedResult);
 
       const result = await usersService.findUser('id');
@@ -74,8 +71,6 @@ describe('UsersService', () => {
 
   describe('removeUser', () => {
     it('should return expected value', async () => {
-      const expectedResult = 'value';
-
       usersRepository.removeUser?.mockResolvedValueOnce(expectedResult);
 
       const result = await usersService.removeUser('id');

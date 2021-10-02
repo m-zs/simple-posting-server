@@ -1,5 +1,10 @@
 import { EntityRepository, Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 
 import { CreateUserDto } from './dto/create-user.dto';
 import { User } from './entities/user.entity';
@@ -19,8 +24,8 @@ export class UsersRepository extends Repository<User> {
     await this.saveUser(newUser);
   }
 
-  async findUsers(): Promise<User[]> {
-    return await this.find();
+  async findUsers(options: IPaginationOptions): Promise<Pagination<User>> {
+    return await paginate<User>(this, options);
   }
 
   async findUser(id: string): Promise<User | undefined> {
