@@ -1,6 +1,11 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import sanitizeHtml from 'sanitize-html';
+import {
+  paginate,
+  Pagination,
+  IPaginationOptions,
+} from 'nestjs-typeorm-paginate';
 
 import { AuthUser } from 'src/auth/auth-user.type';
 import { ArticlesRepository } from './articles.repository';
@@ -32,8 +37,11 @@ export class ArticlesService {
     );
   }
 
-  async findAll(withComments?: boolean): Promise<Article[]> {
-    return await this.articlesRepository.findArticles(withComments);
+  async findAll(
+    options: IPaginationOptions,
+    withComments?: boolean,
+  ): Promise<Pagination<Article>> {
+    return await this.articlesRepository.findArticles(options, withComments);
   }
 
   async findOne(id: string, withComments?: boolean): Promise<Article | void> {
@@ -79,5 +87,9 @@ export class ArticlesService {
       user,
       id,
     );
+  }
+
+  async paginate(options: IPaginationOptions): Promise<Pagination<Article>> {
+    return paginate(this.articlesRepository, options);
   }
 }

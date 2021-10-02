@@ -79,10 +79,12 @@ describe('ArticlesService', () => {
   });
 
   describe('getAll', () => {
+    const paginationDto = { page: 1, limit: 10 };
+
     it('should call repository and return expected value', async () => {
       articlesRepository.findArticles?.mockResolvedValueOnce(expectedResult);
 
-      const result = await articlesService.findAll();
+      const result = await articlesService.findAll(paginationDto);
 
       expect(articlesRepository.findArticles).toHaveBeenCalled();
       expect(result).toBe(expectedResult);

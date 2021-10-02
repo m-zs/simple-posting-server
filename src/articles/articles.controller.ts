@@ -12,6 +12,8 @@ import {
   HttpCode,
   ForbiddenException,
   Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import {
   ApiOperation,
@@ -20,12 +22,15 @@ import {
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { AuthUser } from 'src/auth/auth-user.type';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
 import { Comment } from 'src/comments/entities/comment.entity';
+import { PaginationResponse } from 'src/shared/decorators/pagination-response.decorator';
+import { PaginationDto } from 'src/shared/dto/pagination.dto';
 import { TransformInterceptorIgnore } from 'src/shared/interceptors/transform.interceptor';
 import { ValidatePayloadExistsPipe } from 'src/shared/pipes/validate-payload-exist.pipe';
 import { ArticlesService } from './articles.service';
@@ -50,19 +55,24 @@ export class ArticlesController {
   }
 
   @Get()
+  @UsePipes(new ValidationPipe({ transform: true }))
   @TransformInterceptorIgnore()
   @ApiOperation({ summary: 'Get all articles' })
   @ApiQuery({
     name: 'withComments',
-    description: 'Set to "true" to attach comments to response',
+    description: 'Set "true" to attach comments to response',
     required: false,
     example: 'true',
   })
-  @ApiResponse({ type: [Article] })
+  @PaginationResponse(Article)
   async findAll(
+    @Query() paginationDto: PaginationDto,
     @Query('withComments') withComments?: string,
-  ): Promise<Article[]> {
-    return await this.articlesService.findAll(withComments === 'true');
+  ): Promise<Pagination<Article>> {
+    return await this.articlesService.findAll(
+      { ...paginationDto },
+      withComments === 'true',
+    );
   }
 
   @Get(':id')
@@ -70,7 +80,7 @@ export class ArticlesController {
   @ApiOperation({ summary: 'Get article by id' })
   @ApiQuery({
     name: 'withComments',
-    description: 'Set to "true" to attach comments to response',
+    description: 'Set "true" to attach comments to response',
     required: false,
     example: 'true',
   })

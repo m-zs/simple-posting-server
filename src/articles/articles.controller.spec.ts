@@ -61,10 +61,12 @@ describe('ArticlesController', () => {
   });
 
   describe('findAll', () => {
+    const paginationDto = { page: 1, limit: 10 };
+
     it('should call service and return expected value', async () => {
       articlesService.findAll?.mockResolvedValueOnce(expectedResult);
 
-      const result = await articlesController.findAll();
+      const result = await articlesController.findAll(paginationDto);
 
       expect(articlesService.findAll).toHaveBeenCalled();
       expect(result).toBe(expectedResult);
