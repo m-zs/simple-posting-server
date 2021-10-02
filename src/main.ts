@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import { configService } from './config';
 import { swaggerConfig } from './swagger.config';
 import { TransformInterceptor } from './shared/interceptors/transform.interceptor';
+import { PsqlErrorInterceptor } from './shared/interceptors/psql-error.interceptor';
 import { AllExceptionsFilter } from './shared/filters/all-exceptions.filter';
 import { TrimInputPipe } from './shared/pipes/trim-input.pipe';
 import { AppModule } from './app.module';
@@ -23,6 +24,7 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
   app.useGlobalInterceptors(new TransformInterceptor());
+  app.useGlobalInterceptors(new PsqlErrorInterceptor());
 
   await app.listen(port);
   Logger.log(`Listening at port: ${port}`);

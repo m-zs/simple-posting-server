@@ -1,27 +1,23 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { Exclude } from 'class-transformer';
 import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
 
+import { Article } from 'src/articles/entities/article.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Comment } from 'src/comments/entities/comment.entity';
 
 @Entity()
-export class Article {
+export class Comment {
   @ApiProperty()
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @ApiProperty()
-  @Column()
-  title: string;
 
   @ApiProperty()
   @Column('text')
@@ -35,10 +31,18 @@ export class Article {
   @UpdateDateColumn({ type: 'timestamp' })
   updateDate: Date;
 
+  @ApiProperty()
+  @Column({ type: 'uuid', nullable: true })
+  responseTo: string;
+
   @Exclude({ toPlainOnly: true })
-  @ManyToOne((_type) => User, (user) => user.articles)
+  @ManyToOne((_type) => User, (user) => user.comments)
   user: User;
 
-  @OneToMany((_type) => Comment, (comment) => comment.article)
-  comments?: Comment[];
+  @ManyToOne((_type) => Article, (article) => article.comments)
+  @JoinColumn()
+  article: Article;
+
+  @Column()
+  articleId: Article['id'];
 }

@@ -6,17 +6,21 @@ import {
   Patch,
   Param,
   Delete,
-  UseInterceptors,
   HttpCode,
   UseGuards,
-  UnauthorizedException,
   ParseUUIDPipe,
   NotFoundException,
+  ForbiddenException,
+  Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
+import { PaginationResponse } from 'src/shared/decorators/pagination-response.decorator';
+import { PaginationDto } from 'src/shared/dto/pagination.dto';
 import { ValidatePayloadExistsPipe } from 'src/shared/pipes/validate-payload-exist.pipe';
-import { ConflictInterceptor } from 'src/shared/interceptors/conflict.interceptor';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { AuthUser } from 'src/auth/auth-user.type';
@@ -31,7 +35,6 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @UseInterceptors(ConflictInterceptor)
   @ApiOperation({ summary: 'Create new user' })
   @HttpCode(204)
   async createUser(@Body() createUserDto: CreateUserDto): Promise<void> {
@@ -39,10 +42,13 @@ export class UsersController {
   }
 
   @Get()
+  @UsePipes(new ValidationPipe({ transform: true }))
   @ApiOperation({ summary: 'Get users' })
-  @ApiResponse({ type: [User] })
-  async findUsers(): Promise<User[]> {
-    return await this.usersService.findUsers();
+  @PaginationResponse(User)
+  async findUsers(
+    @Query() paginationDto: PaginationDto,
+  ): Promise<Pagination<User>> {
+    return await this.usersService.findUsers({ ...paginationDto });
   }
 
   @Get(':id')
@@ -63,7 +69,6 @@ export class UsersController {
   @UseGuards(JwtGuard)
   @ApiOperation({ summary: 'Update user data' })
   @ApiParam({ name: 'id', description: 'User id' })
-  @UseInterceptors(ConflictInterceptor)
   @HttpCode(204)
   async updateUser(
     @Param('id', ParseUUIDPipe) id: string,
@@ -72,7 +77,7 @@ export class UsersController {
     @GetUser() user: AuthUser,
   ): Promise<void> {
     if (id !== user.id) {
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     }
 
     return this.usersService.updateUser(id, updateUserDto);
@@ -88,7 +93,7 @@ export class UsersController {
     @GetUser() user: AuthUser,
   ): Promise<void> {
     if (id !== user.id) {
-      throw new UnauthorizedException();
+      throw new ForbiddenException();
     }
 
     return this.usersService.removeUser(id);

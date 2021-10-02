@@ -1,15 +1,15 @@
-import { formatDuplicateMessage } from './psql-db.helpers';
+import { getErrorData } from './psql-db.helpers';
 
 describe('Errors: psql', () => {
-  describe('formatDuplicateMessage', () => {
+  describe('getErrorData', () => {
     it('should return proper message', () => {
-      const expectedResult = 'Value test-value for test-key exists already';
+      const expectedResult = { name: 'test-key', value: 'test-value' };
 
-      const result = formatDuplicateMessage(
+      const result = getErrorData(
         'Key (test-key)=(test-value) already exists.',
       );
 
-      expect(result).toBe(expectedResult);
+      expect(result).toMatchObject(expectedResult);
     });
   });
 });

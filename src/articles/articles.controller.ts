@@ -7,17 +7,30 @@ import {
   Param,
   Delete,
   UseGuards,
-  UseInterceptors,
-  ConflictException,
   ParseUUIDPipe,
   NotFoundException,
   HttpCode,
+  ForbiddenException,
+  Query,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiParam,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
+import { Pagination } from 'nestjs-typeorm-paginate';
 
 import { AuthUser } from 'src/auth/auth-user.type';
 import { GetUser } from 'src/auth/decorators/get-user.decorator';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
+import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
+import { Comment } from 'src/comments/entities/comment.entity';
+import { PaginationResponse } from 'src/shared/decorators/pagination-response.decorator';
+import { PaginationDto } from 'src/shared/dto/pagination.dto';
 import { TransformInterceptorIgnore } from 'src/shared/interceptors/transform.interceptor';
 import { ValidatePayloadExistsPipe } from 'src/shared/pipes/validate-payload-exist.pipe';
 import { ArticlesService } from './articles.service';
@@ -32,7 +45,6 @@ export class ArticlesController {
 
   @Post()
   @UseGuards(JwtGuard)
-  @UseInterceptors(ConflictException)
   @ApiOperation({ summary: 'Create new article' })
   @ApiResponse({ type: Article })
   async create(
@@ -43,22 +55,45 @@ export class ArticlesController {
   }
 
   @Get()
+  @UsePipes(new ValidationPipe({ transform: true }))
   @TransformInterceptorIgnore()
   @ApiOperation({ summary: 'Get all articles' })
-  @ApiResponse({ type: [Article] })
-  async findAll(): Promise<Article[]> {
-    return await this.articlesService.findAll();
+  @ApiQuery({
+    name: 'withComments',
+    description: 'Set "true" to attach comments to response',
+    required: false,
+    example: 'true',
+  })
+  @PaginationResponse(Article)
+  async findAll(
+    @Query() paginationDto: PaginationDto,
+    @Query('withComments') withComments?: string,
+  ): Promise<Pagination<Article>> {
+    return await this.articlesService.findAll(
+      { ...paginationDto },
+      withComments === 'true',
+    );
   }
 
   @Get(':id')
   @TransformInterceptorIgnore()
   @ApiOperation({ summary: 'Get article by id' })
+  @ApiQuery({
+    name: 'withComments',
+    description: 'Set "true" to attach comments to response',
+    required: false,
+    example: 'true',
+  })
   @ApiParam({ name: 'id', description: 'Article id' })
   @ApiResponse({ type: Article })
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
-  ): Promise<Article | undefined> {
-    const article = await this.articlesService.findOne(id);
+    @Query('withComments') withComments?: string,
+  ): Promise<Article | void> {
+    const article = await this.articlesService.findOne(
+      id,
+      withComments === 'true',
+    );
 
     if (!article) {
       throw new NotFoundException();
@@ -78,7 +113,7 @@ export class ArticlesController {
     @GetUser() user: AuthUser,
   ): Promise<void> {
     if (!(await this.articlesService.update(id, updateArticleDto, user))) {
-      throw new NotFoundException();
+      throw new ForbiddenException();
     }
   }
 
@@ -92,7 +127,19 @@ export class ArticlesController {
     @GetUser() user: AuthUser,
   ): Promise<void> {
     if (!(await this.articlesService.remove(id, user))) {
-      throw new NotFoundException();
+      throw new ForbiddenException();
     }
+  }
+
+  @Post(':id/comments')
+  @UseGuards(JwtGuard)
+  @ApiOperation({ summary: 'Create new comment for article' })
+  @ApiResponse({ type: Comment })
+  async createComment(
+    @Body() createCommentDto: CreateCommentDto,
+    @GetUser() user: AuthUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ): Promise<Comment> {
+    return await this.articlesService.createComment(createCommentDto, user, id);
   }
 }

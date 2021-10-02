@@ -3,6 +3,7 @@ import { Exclude } from 'class-transformer';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Article } from 'src/articles/entities/article.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
 
 @Entity()
 export class User {
@@ -30,4 +31,7 @@ export class User {
 
   @OneToMany((_type) => Article, (article) => article.user)
   articles: Article[];
+
+  @OneToMany((_type) => Comment, (comment) => comment.user)
+  comments: Comment[];
 }

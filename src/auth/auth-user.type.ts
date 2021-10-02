@@ -1,3 +1,7 @@
 import { User } from 'src/users/entities/user.entity';
 
-export type AuthUser = Omit<User, 'password' | 'email' | 'articles'>;
+export interface AuthUser {
+  id: User['id'];
+  username: User['username'];
+  sessionVersion: User['sessionVersion'];
+}

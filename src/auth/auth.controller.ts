@@ -7,7 +7,7 @@ import {
   Res,
   UseGuards,
 } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 import { AuthUser } from './auth-user.type';
 
@@ -22,6 +22,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('signin')
+  @ApiOperation({ summary: 'Login' })
   @HttpCode(200)
   async signIn(
     @Body() authCredentialsDto: AuthCredentialsDto,
@@ -37,6 +38,7 @@ export class AuthController {
   }
 
   @Post('signout')
+  @ApiOperation({ summary: 'Logout' })
   @UseGuards(JwtRefreshGuard)
   @HttpCode(200)
   async singOut(
@@ -49,6 +51,7 @@ export class AuthController {
   }
 
   @Get('refresh')
+  @ApiOperation({ summary: 'Refresh auth session' })
   @UseGuards(JwtRefreshGuard)
   async refresh(
     @GetUser() user: AuthUser,

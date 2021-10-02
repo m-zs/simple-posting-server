@@ -1,5 +1,10 @@
 import { AuthUser } from 'src/auth/auth-user.type';
 import { EntityRepository, Repository } from 'typeorm';
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 
 import { Article } from './entities/article.entity';
 import { CreateArticleDto } from './dto/create-article.dto';
@@ -18,16 +23,41 @@ export class ArticlesRepository extends Repository<Article> {
     return article;
   }
 
-  async findArticles(): Promise<Article[]> {
-    return await this.createQueryBuilder('article')
+  async findArticles(
+    options: IPaginationOptions,
+    withComments?: boolean,
+  ): Promise<Pagination<Article>> {
+    const builder = this.createQueryBuilder('article')
+      .leftJoin('article.user', 'user')
+      .addSelect('user.id')
+      .addSelect('user.username');
+
+    if (withComments) {
+      builder
+        .addSelect('user.username')
+        .leftJoinAndSelect('article.comments', 'comment');
+    }
+
+    return await paginate<Article>(builder, options);
+  }
+
+  async findArticle(
+    id: string,
+    withComments?: boolean,
+  ): Promise<Article | undefined> {
+    const builder = this.createQueryBuilder('article')
       .leftJoin('article.user', 'user')
       .addSelect('user.id')
       .addSelect('user.username')
-      .getMany();
-  }
+      .where({ id });
 
-  async findArticle(id: string): Promise<Article | undefined> {
-    return await this.findOne({ id });
+    if (withComments) {
+      builder
+        .addSelect('user.username')
+        .leftJoinAndSelect('article.comments', 'comment');
+    }
+
+    return await builder.getOne();
   }
 
   async updateArticle(
@@ -38,7 +68,7 @@ export class ArticlesRepository extends Repository<Article> {
     return !!(await this.update({ id, user }, updateArticleDto))?.affected;
   }
 
-  async deleteArticle(id: string, user: AuthUser): Promise<boolean> {
+  async removeArticle(id: string, user: AuthUser): Promise<boolean> {
     return !!(await this.delete({ id, user }))?.affected;
   }
 }

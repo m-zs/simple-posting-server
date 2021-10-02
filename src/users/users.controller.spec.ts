@@ -1,8 +1,4 @@
-import {
-  Logger,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Logger, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
 import { AuthModule } from 'src/auth/auth.module';
@@ -14,6 +10,7 @@ import { UsersService } from './users.service';
 describe('UsersController', () => {
   let usersController: UsersController;
   let usersService: MockType<UsersService>;
+  const expectedResult = 'value';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -47,8 +44,6 @@ describe('UsersController', () => {
 
   describe('createUser', () => {
     it('should return expected value', async () => {
-      const expectedResult = 'value';
-
       usersService.createUser?.mockResolvedValue(expectedResult);
 
       const result = await usersController.createUser({
@@ -63,12 +58,12 @@ describe('UsersController', () => {
   });
 
   describe('findUsers', () => {
-    it('should return expected value', async () => {
-      const expectedResult = 'value';
+    const paginationDto = { page: 1, limit: 10 };
 
+    it('should return expected value', async () => {
       usersService.findUsers?.mockResolvedValueOnce(expectedResult);
 
-      const result = await usersController.findUsers();
+      const result = await usersController.findUsers(paginationDto);
 
       expect(result).toBe(expectedResult);
     });
@@ -76,8 +71,6 @@ describe('UsersController', () => {
 
   describe('findUser', () => {
     it('should return expected value', async () => {
-      const expectedResult = 'value';
-
       usersService.findUser?.mockResolvedValueOnce(expectedResult);
 
       const result = await usersController.findUser('');
@@ -96,8 +89,6 @@ describe('UsersController', () => {
 
   describe('removeUser', () => {
     it('should return expected value', async () => {
-      const expectedResult = 'value';
-
       usersService.removeUser?.mockResolvedValueOnce(expectedResult);
 
       const result = await usersController.removeUser('1', {
@@ -109,9 +100,7 @@ describe('UsersController', () => {
       expect(result).toBe(expectedResult);
     });
 
-    it('should throw UnauthorizedException', async () => {
-      const expectedResult = 'value';
-
+    it('should throw ForbiddenException', async () => {
       usersService.removeUser?.mockResolvedValueOnce(expectedResult);
 
       await expect(
@@ -120,14 +109,12 @@ describe('UsersController', () => {
           username: '',
           sessionVersion: '',
         }),
-      ).rejects.toThrowError(UnauthorizedException);
+      ).rejects.toThrowError(ForbiddenException);
     });
   });
 
   describe('updateUser', () => {
     it('should return expected value', async () => {
-      const expectedResult = 'value';
-
       usersService.updateUser?.mockResolvedValueOnce(expectedResult);
 
       const result = await usersController.updateUser(
@@ -143,9 +130,7 @@ describe('UsersController', () => {
       expect(result).toBe(expectedResult);
     });
 
-    it('should throw UnauthorizedException', async () => {
-      const expectedResult = 'value';
-
+    it('should throw ForbiddenException', async () => {
       usersService.updateUser?.mockResolvedValueOnce(expectedResult);
 
       await expect(
@@ -158,7 +143,7 @@ describe('UsersController', () => {
             sessionVersion: '',
           },
         ),
-      ).rejects.toThrowError(UnauthorizedException);
+      ).rejects.toThrowError(ForbiddenException);
     });
   });
 });

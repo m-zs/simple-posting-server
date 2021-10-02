@@ -1,13 +1,20 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
 import { ArticlesController } from './articles.controller';
 import { MockType } from 'src/types';
 import { ArticlesService } from './articles.service';
-import { NotFoundException } from '@nestjs/common';
 
 describe('ArticlesController', () => {
   let articlesController: ArticlesController;
   let articlesService: MockType<ArticlesService>;
+  const authUser = {
+    username: 'user',
+    id: 'id',
+    sessionVersion: '',
+  };
+  const expectedResult = 'value';
+  const id = 'id';
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -20,6 +27,8 @@ describe('ArticlesController', () => {
             findAll: jest.fn(),
             findOne: jest.fn(),
             update: jest.fn(),
+            createComment: jest.fn(),
+            remove: jest.fn(),
           })),
         },
       ],
@@ -35,12 +44,6 @@ describe('ArticlesController', () => {
         title: 'title',
         description: 'description',
       };
-      const authUser = {
-        username: 'user',
-        id: 'id',
-        sessionVersion: '',
-      };
-      const expectedResult = 'value';
 
       articlesService.create?.mockResolvedValueOnce(expectedResult);
 
@@ -58,12 +61,12 @@ describe('ArticlesController', () => {
   });
 
   describe('findAll', () => {
-    it('should call service and return expected value', async () => {
-      const expectedResult = 'value';
+    const paginationDto = { page: 1, limit: 10 };
 
+    it('should call service and return expected value', async () => {
       articlesService.findAll?.mockResolvedValueOnce(expectedResult);
 
-      const result = await articlesController.findAll();
+      const result = await articlesController.findAll(paginationDto);
 
       expect(articlesService.findAll).toHaveBeenCalled();
       expect(result).toBe(expectedResult);
@@ -72,14 +75,11 @@ describe('ArticlesController', () => {
 
   describe('findOne', () => {
     it('should call service and return expected value', async () => {
-      const expectedResult = 'value';
-      const id = 'id';
-
       articlesService.findOne?.mockResolvedValueOnce(expectedResult);
 
       const result = await articlesController.findOne(id);
 
-      expect(articlesService.findOne).toHaveBeenCalledWith(id);
+      expect(articlesService.findOne).toHaveBeenCalledWith(id, false);
       expect(result).toBe(expectedResult);
     });
 
@@ -93,18 +93,10 @@ describe('ArticlesController', () => {
   });
 
   describe('update', () => {
-    const id = 'id';
     const updateArticleDto = { title: 'title', description: 'description' };
-    const authUser = {
-      username: 'user',
-      id: 'id',
-      sessionVersion: '',
-    };
 
     it('should call service', async () => {
-      const expectedResult = true;
-
-      articlesService.update?.mockResolvedValueOnce(expectedResult);
+      articlesService.update?.mockResolvedValueOnce(true);
 
       await articlesController.update(id, updateArticleDto, authUser);
 
@@ -115,14 +107,52 @@ describe('ArticlesController', () => {
       );
     });
 
-    it('should throw NotFoundException', async () => {
-      const expectedResult = false;
-
-      articlesService.update?.mockResolvedValueOnce(expectedResult);
+    it('should throw ForbiddenException', async () => {
+      articlesService.update?.mockResolvedValueOnce(false);
 
       await expect(
         articlesController.update(id, updateArticleDto, authUser),
-      ).rejects.toThrowError(NotFoundException);
+      ).rejects.toThrowError(ForbiddenException);
+    });
+  });
+
+  describe('createComment', () => {
+    it('should call service and return expected value', async () => {
+      const createCommentDto = { description: 'desc' };
+
+      articlesService.createComment?.mockResolvedValueOnce(expectedResult);
+
+      const result = await articlesController.createComment(
+        createCommentDto,
+        authUser,
+        id,
+      );
+
+      expect(articlesService.createComment).toHaveBeenCalledWith(
+        createCommentDto,
+        authUser,
+        id,
+      );
+      expect(result).toBe(expectedResult);
+    });
+  });
+
+  describe('remove', () => {
+    it('should throw ForbiddenException', async () => {
+      articlesService.remove?.mockResolvedValueOnce(false);
+
+      await expect(
+        articlesController.remove(id, authUser),
+      ).rejects.toThrowError(ForbiddenException);
+      expect(articlesService.remove).toHaveBeenCalledWith(id, authUser);
+    });
+
+    it('should call service', async () => {
+      articlesService.remove?.mockResolvedValueOnce(true);
+
+      await articlesController.remove(id, authUser);
+
+      expect(articlesService.remove).toHaveBeenCalledWith(id, authUser);
     });
   });
 });
