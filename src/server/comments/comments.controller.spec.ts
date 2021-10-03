@@ -1,7 +1,7 @@
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { MockType } from '~server/types';
+import { MockType } from 'src/server//types';
 import { CommentsController } from './comments.controller';
 import { CommentsService } from './comments.service';
 

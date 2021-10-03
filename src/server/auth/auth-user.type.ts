@@ -1,4 +1,4 @@
-import { User } from '~server/users/entities/user.entity';
+import { User } from 'src/server//users/entities/user.entity';
 
 export interface AuthUser {
   id: User['id'];

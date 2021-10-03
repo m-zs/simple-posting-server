@@ -1,8 +1,8 @@
 import { Logger, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { AuthModule } from '~server/auth/auth.module';
-import { MockType } from '~server/types';
+import { AuthModule } from 'src/server//auth/auth.module';
+import { MockType } from 'src/server//types';
 import { UsersController } from './users.controller';
 import { UsersRepository } from './users.repository';
 import { UsersService } from './users.service';

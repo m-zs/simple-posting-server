@@ -9,8 +9,6 @@
   "coverageDirectory": "../coverage",
   "testEnvironment": "node",
   "moduleNameMapper": {
-    "^src/(.*)$": "<rootDir>/$1",
-    "~server/(.*)": "<rootDir>/server/$1",
-    "~client/(.*)": "<rootDir>/client/$1"
+    "^src/(.*)$": "<rootDir>/$1"
   }
 }

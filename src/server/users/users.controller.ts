@@ -18,12 +18,12 @@ import {
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
-import { PaginationResponse } from '~server/shared/decorators/pagination-response.decorator';
-import { PaginationDto } from '~server/shared/dto/pagination.dto';
-import { ValidatePayloadExistsPipe } from '~server/shared/pipes/validate-payload-exist.pipe';
-import { GetUser } from '~server/auth/decorators/get-user.decorator';
-import { JwtGuard } from '~server/auth/guards/jwt.guard';
-import { AuthUser } from '~server/auth/auth-user.type';
+import { PaginationResponse } from 'src/server//shared/decorators/pagination-response.decorator';
+import { PaginationDto } from 'src/server//shared/dto/pagination.dto';
+import { ValidatePayloadExistsPipe } from 'src/server//shared/pipes/validate-payload-exist.pipe';
+import { GetUser } from 'src/server//auth/decorators/get-user.decorator';
+import { JwtGuard } from 'src/server//auth/guards/jwt.guard';
+import { AuthUser } from 'src/server//auth/auth-user.type';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';

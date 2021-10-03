@@ -2,8 +2,8 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Exclude } from 'class-transformer';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-import { Article } from '~server/articles/entities/article.entity';
-import { Comment } from '~server/comments/entities/comment.entity';
+import { Article } from 'src/server//articles/entities/article.entity';
+import { Comment } from 'src/server//comments/entities/comment.entity';
 
 @Entity()
 export class User {

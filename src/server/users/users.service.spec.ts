@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { MockType } from '~server/types';
+import { MockType } from 'src/server//types';
 import { UsersRepository } from './users.repository';
 import { UsersService } from './users.service';
 

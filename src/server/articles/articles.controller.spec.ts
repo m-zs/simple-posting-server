@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException, ForbiddenException } from '@nestjs/common';
 
 import { ArticlesController } from './articles.controller';
-import { MockType } from '~server/types';
+import { MockType } from 'src/server//types';
 import { ArticlesService } from './articles.service';
 
 describe('ArticlesController', () => {

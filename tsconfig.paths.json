@@ -1,8 +1,0 @@
-{
-  "compilerOptions": {
-    "paths": {
-      "~client/*": ["./src/client/*"],
-      "~server/*": ["./src/server/*"]
-    }
-  }
-}

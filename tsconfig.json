@@ -1,5 +1,4 @@
 {
-  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
@@ -22,6 +21,5 @@
     "esModuleInterop": true,
     "jsx": "preserve"
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"],
-  "exclude": [".next"],
+  "include": ["src/**/*.ts", "src/**/*.tsx"]
 }
