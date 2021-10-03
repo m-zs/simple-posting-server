@@ -1,4 +1,5 @@
 {
+  "extends": "./tsconfig.paths.json",
   "compilerOptions": {
     "module": "commonjs",
     "declaration": true,
@@ -23,5 +24,4 @@
   },
   "include": ["src/**/*.ts", "src/**/*.tsx"],
   "exclude": [".next"],
-  "ignorePatterns": ["/*.*"]
 }
