@@ -1,14 +1,22 @@
-import App, { AppProps, AppContext } from 'next/app';
+import nextApp, { AppProps, AppContext } from 'next/app';
+import { ThemeProvider } from 'styled-components';
 
-const MyApp = ({ Component, pageProps }: AppProps) => {
-  return <Component {...pageProps} />;
+import { GlobalStyle } from '~client/styles/globalStyles';
+import { theme } from '~client/styles/theme';
+
+const App = ({ Component, pageProps }: AppProps) => {
+  return (
+    <ThemeProvider theme={theme}>
+      <GlobalStyle />
+      <Component {...pageProps} />
+    </ThemeProvider>
+  );
 };
 
-// This disables the ability to perform automatic static optimization, causing every page in your app to be server-side rendered.
-MyApp.getInitialProps = async (appContext: AppContext) => {
-  const appProps = await App.getInitialProps(appContext);
+App.getInitialProps = async (appContext: AppContext) => {
+  const appProps = await nextApp.getInitialProps(appContext);
 
   return { ...appProps };
 };
 
-export default MyApp;
+export default App;
