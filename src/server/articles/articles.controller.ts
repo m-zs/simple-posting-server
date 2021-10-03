@@ -24,15 +24,15 @@ import {
 } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
-import { AuthUser } from 'src/server/auth/auth-user.type';
-import { GetUser } from 'src/server/auth/decorators/get-user.decorator';
-import { JwtGuard } from 'src/server/auth/guards/jwt.guard';
-import { CreateCommentDto } from 'src/server/comments/dto/create-comment.dto';
-import { Comment } from 'src/server/comments/entities/comment.entity';
-import { PaginationResponse } from 'src/server/shared/decorators/pagination-response.decorator';
-import { PaginationDto } from 'src/server/shared/dto/pagination.dto';
-import { TransformInterceptorIgnore } from 'src/server/shared/interceptors/transform.interceptor';
-import { ValidatePayloadExistsPipe } from 'src/server/shared/pipes/validate-payload-exist.pipe';
+import { AuthUser } from '~server/auth/auth-user.type';
+import { GetUser } from '~server/auth/decorators/get-user.decorator';
+import { JwtGuard } from '~server/auth/guards/jwt.guard';
+import { CreateCommentDto } from '~server/comments/dto/create-comment.dto';
+import { Comment } from '~server/comments/entities/comment.entity';
+import { PaginationResponse } from '~server/shared/decorators/pagination-response.decorator';
+import { PaginationDto } from '~server/shared/dto/pagination.dto';
+import { TransformInterceptorIgnore } from '~server/shared/interceptors/transform.interceptor';
+import { ValidatePayloadExistsPipe } from '~server/shared/pipes/validate-payload-exist.pipe';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';

@@ -7,7 +7,7 @@ import { JwtStrategy } from './starategy/jwt.strategy';
 import { JwtRefreshStrategy } from './starategy/jwt-refresh.strategy';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-import { UsersRepository } from 'src/server/users/users.repository';
+import { UsersRepository } from '~server/users/users.repository';
 
 @Module({
   imports: [

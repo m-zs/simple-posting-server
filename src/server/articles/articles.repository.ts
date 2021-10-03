@@ -1,4 +1,4 @@
-import { AuthUser } from 'src/server/auth/auth-user.type';
+import { AuthUser } from '~server/auth/auth-user.type';
 import { EntityRepository, Repository } from 'typeorm';
 import {
   IPaginationOptions,

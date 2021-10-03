@@ -3,8 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import * as bcrypt from 'bcrypt';
 
-import { MockType } from 'src/server/types';
-import { UsersRepository } from 'src/server/users/users.repository';
+import { MockType } from '~server/types';
+import { UsersRepository } from '~server/users/users.repository';
 import { AuthService } from './auth.service';
 
 jest.mock('bcrypt');

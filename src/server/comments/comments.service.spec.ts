@@ -2,7 +2,7 @@ import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import sanitizeHtml from 'sanitize-html';
 
-import { MockType } from 'src/server/types';
+import { MockType } from '~server/types';
 import { CommentsRepository } from './comments.repository';
 import { CommentsService } from './comments.service';
 import { Comment } from './entities/comment.entity';

@@ -10,8 +10,8 @@ import {
 } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
-import { User } from 'src/server/users/entities/user.entity';
-import { Comment } from 'src/server/comments/entities/comment.entity';
+import { User } from '~server/users/entities/user.entity';
+import { Comment } from '~server/comments/entities/comment.entity';
 
 @Entity()
 export class Article {

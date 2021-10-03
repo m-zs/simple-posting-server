@@ -2,11 +2,11 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import sanitizeHtml from 'sanitize-html';
 
-import { MockType } from 'src/server/types';
+import { MockType } from '~server/types';
 import { ArticlesService } from './articles.service';
 import { ArticlesRepository } from './articles.repository';
-import { CommentsService } from 'src/server/comments/comments.service';
-import { CommentsModule } from 'src/server/comments/comments.module';
+import { CommentsService } from '~server/comments/comments.service';
+import { CommentsModule } from '~server/comments/comments.module';
 import { Article } from './entities/article.entity';
 
 jest.mock('sanitize-html');
