@@ -7,14 +7,15 @@ import {
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
 
-import { AuthUser } from 'src/server//auth/auth-user.type';
+import { AuthUser } from 'src/server/auth/auth-user.type';
 import { ArticlesRepository } from './articles.repository';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { Article } from './entities/article.entity';
-import { CommentsService } from 'src/server//comments/comments.service';
-import { CreateCommentDto } from 'src/server//comments/dto/create-comment.dto';
-import { Comment } from 'src/server//comments/entities/comment.entity';
+import { CommentsService } from 'src/server/comments/comments.service';
+import { CreateCommentDto } from 'src/server/comments/dto/create-comment.dto';
+import { Comment } from 'src/server/comments/entities/comment.entity';
+import { FindArticleDto } from './dto/find-article.dto';
 
 @Injectable()
 export class ArticlesService {
@@ -39,13 +40,12 @@ export class ArticlesService {
 
   async findAll(
     options: IPaginationOptions,
-    withComments?: boolean,
-  ): Promise<Pagination<Article>> {
-    return await this.articlesRepository.findArticles(options, withComments);
+  ): Promise<Pagination<FindArticleDto>> {
+    return await this.articlesRepository.findArticles(options);
   }
 
-  async findOne(id: string, withComments?: boolean): Promise<Article | void> {
-    return await this.articlesRepository.findArticle(id, withComments);
+  async findOne(id: string): Promise<FindArticleDto | void> {
+    return await this.articlesRepository.findArticle(id);
   }
 
   async update(

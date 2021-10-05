@@ -1,6 +1,6 @@
 import { EntityRepository, Repository } from 'typeorm';
 
-import { AuthUser } from 'src/server//auth/auth-user.type';
+import { AuthUser } from 'src/server/auth/auth-user.type';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { Comment } from './entities/comment.entity';
@@ -20,7 +20,7 @@ export class CommentsRepository extends Repository<Comment> {
   }
 
   async findComment(id: string): Promise<Comment | void> {
-    return await this.findOne({ id });
+    return await this.findOne({ id }, { relations: ['user'] });
   }
 
   async updateComment(

@@ -3,8 +3,8 @@ import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 
-import { configService } from 'src/server//config';
-import { UsersRepository } from 'src/server//users/users.repository';
+import { configService } from 'src/server/config';
+import { UsersRepository } from 'src/server/users/users.repository';
 import { AuthUser } from './auth-user.type';
 import { AuthCredentialsDto } from './dto/auth-credentials.dto';
 

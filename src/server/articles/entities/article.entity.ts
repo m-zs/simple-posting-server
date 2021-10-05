@@ -8,10 +8,9 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Exclude } from 'class-transformer';
 
-import { User } from 'src/server//users/entities/user.entity';
-import { Comment } from 'src/server//comments/entities/comment.entity';
+import { User } from 'src/server/users/entities/user.entity';
+import { Comment } from 'src/server/comments/entities/comment.entity';
 
 @Entity()
 export class Article {
@@ -35,7 +34,7 @@ export class Article {
   @UpdateDateColumn({ type: 'timestamp' })
   updateDate: Date;
 
-  @Exclude({ toPlainOnly: true })
+  @ApiProperty({ type: () => User })
   @ManyToOne((_type) => User, (user) => user.articles)
   user: User;
 

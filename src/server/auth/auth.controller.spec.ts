@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { Response } from 'express';
 
-import { MockType } from 'src/server//types';
+import { MockType } from 'src/server/types';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 

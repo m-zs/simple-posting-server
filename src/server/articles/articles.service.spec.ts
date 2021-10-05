@@ -2,12 +2,12 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException } from '@nestjs/common';
 import sanitizeHtml from 'sanitize-html';
 
-import { MockType } from 'src/server//types';
+import { MockType } from 'src/server/types';
 import { ArticlesService } from './articles.service';
 import { ArticlesRepository } from './articles.repository';
-import { CommentsService } from 'src/server//comments/comments.service';
-import { CommentsModule } from 'src/server//comments/comments.module';
-import { Article } from './entities/article.entity';
+import { CommentsService } from 'src/server/comments/comments.service';
+import { CommentsModule } from 'src/server/comments/comments.module';
+import { FindArticleDto } from './dto/find-article.dto';
 
 jest.mock('sanitize-html');
 
@@ -97,10 +97,7 @@ describe('ArticlesService', () => {
 
       const result = await articlesService.findOne(id);
 
-      expect(articlesRepository.findArticle).toHaveBeenCalledWith(
-        id,
-        undefined,
-      );
+      expect(articlesRepository.findArticle).toHaveBeenCalledWith(id);
       expect(result).toBe(expectedResult);
     });
   });
@@ -113,7 +110,7 @@ describe('ArticlesService', () => {
       articlesRepository.updateArticle?.mockResolvedValueOnce(expectedResult);
       jest
         .spyOn(articlesService, 'findOne')
-        .mockResolvedValueOnce({} as Article);
+        .mockResolvedValueOnce({} as FindArticleDto);
 
       const result = await articlesService.update(
         id,
@@ -170,7 +167,7 @@ describe('ArticlesService', () => {
       articlesRepository.removeArticle?.mockResolvedValueOnce(expectedResult);
       jest
         .spyOn(articlesService, 'findOne')
-        .mockResolvedValueOnce({} as Article);
+        .mockResolvedValueOnce({} as FindArticleDto);
 
       const result = await articlesService.remove(id, authUser);
 

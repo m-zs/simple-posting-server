@@ -15,26 +15,21 @@ import {
   UsePipes,
   ValidationPipe,
 } from '@nestjs/common';
-import {
-  ApiOperation,
-  ApiParam,
-  ApiQuery,
-  ApiResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
-import { AuthUser } from 'src/server//auth/auth-user.type';
-import { GetUser } from 'src/server//auth/decorators/get-user.decorator';
-import { JwtGuard } from 'src/server//auth/guards/jwt.guard';
-import { CreateCommentDto } from 'src/server//comments/dto/create-comment.dto';
-import { Comment } from 'src/server//comments/entities/comment.entity';
-import { PaginationResponse } from 'src/server//shared/decorators/pagination-response.decorator';
-import { PaginationDto } from 'src/server//shared/dto/pagination.dto';
-import { TransformInterceptorIgnore } from 'src/server//shared/interceptors/transform.interceptor';
-import { ValidatePayloadExistsPipe } from 'src/server//shared/pipes/validate-payload-exist.pipe';
+import { AuthUser } from 'src/server/auth/auth-user.type';
+import { GetUser } from 'src/server/auth/decorators/get-user.decorator';
+import { JwtGuard } from 'src/server/auth/guards/jwt.guard';
+import { CreateCommentDto } from 'src/server/comments/dto/create-comment.dto';
+import { Comment } from 'src/server/comments/entities/comment.entity';
+import { PaginationResponse } from 'src/server/shared/decorators/pagination-response.decorator';
+import { PaginationDto } from 'src/server/shared/dto/pagination.dto';
+import { TransformInterceptorIgnore } from 'src/server/shared/interceptors/transform.interceptor';
+import { ValidatePayloadExistsPipe } from 'src/server/shared/pipes/validate-payload-exist.pipe';
 import { ArticlesService } from './articles.service';
 import { CreateArticleDto } from './dto/create-article.dto';
+import { FindArticleDto } from './dto/find-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
 import { Article } from './entities/article.entity';
 
@@ -56,44 +51,23 @@ export class ArticlesController {
 
   @Get()
   @UsePipes(new ValidationPipe({ transform: true }))
-  @TransformInterceptorIgnore()
   @ApiOperation({ summary: 'Get all articles' })
-  @ApiQuery({
-    name: 'withComments',
-    description: 'Set "true" to attach comments to response',
-    required: false,
-    example: 'true',
-  })
-  @PaginationResponse(Article)
+  @PaginationResponse(FindArticleDto)
   async findAll(
     @Query() paginationDto: PaginationDto,
-    @Query('withComments') withComments?: string,
-  ): Promise<Pagination<Article>> {
-    return await this.articlesService.findAll(
-      { ...paginationDto },
-      withComments === 'true',
-    );
+  ): Promise<Pagination<FindArticleDto>> {
+    return await this.articlesService.findAll({ ...paginationDto });
   }
 
   @Get(':id')
   @TransformInterceptorIgnore()
   @ApiOperation({ summary: 'Get article by id' })
-  @ApiQuery({
-    name: 'withComments',
-    description: 'Set "true" to attach comments to response',
-    required: false,
-    example: 'true',
-  })
   @ApiParam({ name: 'id', description: 'Article id' })
-  @ApiResponse({ type: Article })
+  @ApiResponse({ type: FindArticleDto })
   async findOne(
     @Param('id', ParseUUIDPipe) id: string,
-    @Query('withComments') withComments?: string,
-  ): Promise<Article | void> {
-    const article = await this.articlesService.findOne(
-      id,
-      withComments === 'true',
-    );
+  ): Promise<FindArticleDto | void> {
+    const article = await this.articlesService.findOne(id);
 
     if (!article) {
       throw new NotFoundException();

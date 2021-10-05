@@ -8,7 +8,7 @@ import {
 } from '@nestjs/common';
 import { catchError, Observable } from 'rxjs';
 
-import { DB_ERRORS, getErrorData } from 'src/server//shared/errors/psql';
+import { DB_ERRORS, getErrorData } from 'src/server/shared/errors/psql';
 
 @Injectable()
 export class PsqlErrorInterceptor implements NestInterceptor {

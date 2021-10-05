@@ -1,4 +1,4 @@
-import { AuthUser } from 'src/server//auth/auth-user.type';
+import { AuthUser } from 'src/server/auth/auth-user.type';
 import { EntityRepository, Repository } from 'typeorm';
 import {
   IPaginationOptions,
@@ -9,6 +9,7 @@ import {
 import { Article } from './entities/article.entity';
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
+import { FindArticleDto } from './dto/find-article.dto';
 
 @EntityRepository(Article)
 export class ArticlesRepository extends Repository<Article> {
@@ -25,39 +26,25 @@ export class ArticlesRepository extends Repository<Article> {
 
   async findArticles(
     options: IPaginationOptions,
-    withComments?: boolean,
-  ): Promise<Pagination<Article>> {
+  ): Promise<Pagination<FindArticleDto>> {
     const builder = this.createQueryBuilder('article')
       .leftJoin('article.user', 'user')
       .addSelect('user.id')
-      .addSelect('user.username');
+      .loadRelationCountAndMap('article.commentsCount', 'article.comments');
 
-    if (withComments) {
-      builder
-        .addSelect('user.username')
-        .leftJoinAndSelect('article.comments', 'comment');
-    }
-
-    return await paginate<Article>(builder, options);
+    return (await paginate<Article>(
+      builder,
+      options,
+    )) as Pagination<FindArticleDto>;
   }
 
-  async findArticle(
-    id: string,
-    withComments?: boolean,
-  ): Promise<Article | undefined> {
-    const builder = this.createQueryBuilder('article')
+  async findArticle(id: string): Promise<FindArticleDto | undefined> {
+    return (await this.createQueryBuilder('article')
       .leftJoin('article.user', 'user')
       .addSelect('user.id')
-      .addSelect('user.username')
-      .where({ id });
-
-    if (withComments) {
-      builder
-        .addSelect('user.username')
-        .leftJoinAndSelect('article.comments', 'comment');
-    }
-
-    return await builder.getOne();
+      .loadRelationCountAndMap('article.commentsCount', 'article.comments')
+      .where({ id })
+      .getOne()) as FindArticleDto | undefined;
   }
 
   async updateArticle(

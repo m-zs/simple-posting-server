@@ -1,5 +1,4 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { Exclude } from 'class-transformer';
 import {
   Column,
   CreateDateColumn,
@@ -10,8 +9,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-import { Article } from 'src/server//articles/entities/article.entity';
-import { User } from 'src/server//users/entities/user.entity';
+import { Article } from 'src/server/articles/entities/article.entity';
+import { User } from 'src/server/users/entities/user.entity';
 
 @Entity()
 export class Comment {
@@ -35,7 +34,7 @@ export class Comment {
   @Column({ type: 'uuid', nullable: true })
   responseTo: string;
 
-  @Exclude({ toPlainOnly: true })
+  @ApiProperty({ type: () => User })
   @ManyToOne((_type) => User, (user) => user.comments)
   user: User;
 
@@ -43,6 +42,7 @@ export class Comment {
   @JoinColumn()
   article: Article;
 
+  @ApiProperty({ type: 'string' })
   @Column()
   articleId: Article['id'];
 }
