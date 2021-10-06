@@ -2,28 +2,35 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Request } from 'express';
 
 import { configService } from 'src/server/config/config.service';
 import { UsersRepository } from 'src/server/users/users.repository';
+import { AuthUser } from '../types/auth-user.type';
 import { JWTPayload } from './jwt-payload.interface';
-import { AuthUser } from '../auth-user.type';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class JwtRefreshStrategy extends PassportStrategy(
+  Strategy,
+  'jwt-refresh',
+) {
   constructor(
     @InjectRepository(UsersRepository) private usersRepository: UsersRepository,
   ) {
     super({
-      secretOrKey: configService.getValue('JWT_ACCESS_SECRET'),
-      jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+      secretOrKey: configService.getValue('JWT_REFRESH_SECRET'),
+      jwtFromRequest: ExtractJwt.fromExtractors([
+        (req: Request) => req?.cookies?.rtc,
+      ]),
+      passReqToCallback: true,
     });
   }
 
-  async validate(payload: JWTPayload): Promise<AuthUser> {
+  async validate(req: Request, payload: JWTPayload): Promise<AuthUser> {
     const { id } = payload;
     const user = await this.usersRepository.findUser(id);
 
-    if (!user) {
+    if (!user || req?.cookies?.rtc !== user.sessionVersion) {
       throw new UnauthorizedException();
     }
 

@@ -7,7 +7,7 @@ import {
   IPaginationOptions,
 } from 'nestjs-typeorm-paginate';
 
-import { AuthUser } from 'src/server/auth/auth-user.type';
+import { AuthUser } from 'src/server/auth';
 import { CommentsService } from 'src/server/comments/comments.service';
 import { CreateCommentDto } from 'src/server/comments/dto/create-comment.dto';
 import { Comment } from 'src/server/comments/entities/comment.entity';

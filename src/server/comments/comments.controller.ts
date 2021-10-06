@@ -13,9 +13,7 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
-import { JwtGuard } from 'src/server/auth/guards/jwt.guard';
-import { AuthUser } from 'src/server/auth/auth-user.type';
-import { GetUser } from 'src/server/auth/decorators/get-user.decorator';
+import { JwtGuard, AuthUser, GetUser } from 'src/server/auth';
 import { ValidatePayloadExistsPipe } from 'src/server/shared/pipes/validate-payload-exist.pipe';
 import { CommentsService } from './comments.service';
 import { UpdateCommentDto } from './dto/update-comment.dto';

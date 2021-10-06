@@ -5,8 +5,8 @@ import * as bcrypt from 'bcrypt';
 
 import { configService } from 'src/server/config';
 import { UsersRepository } from 'src/server/users/users.repository';
-import { AuthUser } from './auth-user.type';
-import { AuthCredentialsDto } from './dto/auth-credentials.dto';
+import { AuthUser } from '../types/auth-user.type';
+import { AuthCredentialsDto } from '../dto/auth-credentials.dto';
 
 @Injectable()
 export class AuthService {

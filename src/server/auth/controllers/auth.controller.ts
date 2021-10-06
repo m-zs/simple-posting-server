@@ -9,12 +9,12 @@ import {
 } from '@nestjs/common';
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
-import { AuthUser } from './auth-user.type';
 
-import { AuthService } from './auth.service';
-import { GetUser } from './decorators/get-user.decorator';
-import { AuthCredentialsDto } from './dto/auth-credentials.dto';
-import { JwtRefreshGuard } from './guards/jwt-refresh.guard';
+import { AuthUser } from '../types/auth-user.type';
+import { AuthService } from '../services/auth.service';
+import { GetUser } from '../decorators/get-user.decorator';
+import { AuthCredentialsDto } from '../dto/auth-credentials.dto';
+import { JwtRefreshGuard } from '../guards/jwt-refresh.guard';
 
 @Controller('api/auth')
 @ApiTags('auth')

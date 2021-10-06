@@ -1,4 +1,3 @@
-import { AuthUser } from 'src/server/auth/auth-user.type';
 import { EntityRepository, Repository } from 'typeorm';
 import {
   IPaginationOptions,
@@ -6,6 +5,7 @@ import {
   Pagination,
 } from 'nestjs-typeorm-paginate';
 
+import { AuthUser } from 'src/server/auth';
 import { Article } from '../entities/article.entity';
 import { CreateArticleDto } from '../dto/create-article.dto';
 import { UpdateArticleDto } from '../dto/update-article.dto';

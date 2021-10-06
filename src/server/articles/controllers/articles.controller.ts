@@ -18,9 +18,7 @@ import {
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
-import { AuthUser } from 'src/server/auth/auth-user.type';
-import { GetUser } from 'src/server/auth/decorators/get-user.decorator';
-import { JwtGuard } from 'src/server/auth/guards/jwt.guard';
+import { AuthUser, GetUser, JwtGuard } from 'src/server/auth';
 import { CreateCommentDto } from 'src/server/comments/dto/create-comment.dto';
 import { Comment } from 'src/server/comments/entities/comment.entity';
 import { PaginationResponse } from 'src/server/shared/decorators/pagination-response.decorator';
