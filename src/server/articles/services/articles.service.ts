@@ -8,14 +8,14 @@ import {
 } from 'nestjs-typeorm-paginate';
 
 import { AuthUser } from 'src/server/auth/auth-user.type';
-import { ArticlesRepository } from './articles.repository';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
-import { Article } from './entities/article.entity';
 import { CommentsService } from 'src/server/comments/comments.service';
 import { CreateCommentDto } from 'src/server/comments/dto/create-comment.dto';
 import { Comment } from 'src/server/comments/entities/comment.entity';
-import { FindArticleDto } from './dto/find-article.dto';
+import { ArticlesRepository } from '../repositories/articles.repository';
+import { Article } from '../entities/article.entity';
+import { CreateArticleDto } from '../dto/create-article.dto';
+import { UpdateArticleDto } from '../dto/update-article.dto';
+import { FindArticleDto } from '../dto/find-article.dto';
 
 @Injectable()
 export class ArticlesService {

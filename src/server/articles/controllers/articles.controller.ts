@@ -27,11 +27,11 @@ import { PaginationResponse } from 'src/server/shared/decorators/pagination-resp
 import { PaginationDto } from 'src/server/shared/dto/pagination.dto';
 import { TransformInterceptorIgnore } from 'src/server/shared/interceptors/transform.interceptor';
 import { ValidatePayloadExistsPipe } from 'src/server/shared/pipes/validate-payload-exist.pipe';
-import { ArticlesService } from './articles.service';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { FindArticleDto } from './dto/find-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
-import { Article } from './entities/article.entity';
+import { ArticlesService } from '../services/articles.service';
+import { Article } from '../entities/article.entity';
+import { CreateArticleDto } from '../dto/create-article.dto';
+import { FindArticleDto } from '../dto/find-article.dto';
+import { UpdateArticleDto } from '../dto/update-article.dto';
 
 @Controller('api/articles')
 @ApiTags('articles')

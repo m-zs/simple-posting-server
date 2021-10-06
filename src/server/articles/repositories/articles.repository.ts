@@ -6,10 +6,10 @@ import {
   Pagination,
 } from 'nestjs-typeorm-paginate';
 
-import { Article } from './entities/article.entity';
-import { CreateArticleDto } from './dto/create-article.dto';
-import { UpdateArticleDto } from './dto/update-article.dto';
-import { FindArticleDto } from './dto/find-article.dto';
+import { Article } from '../entities/article.entity';
+import { CreateArticleDto } from '../dto/create-article.dto';
+import { UpdateArticleDto } from '../dto/update-article.dto';
+import { FindArticleDto } from '../dto/find-article.dto';
 
 @EntityRepository(Article)
 export class ArticlesRepository extends Repository<Article> {
