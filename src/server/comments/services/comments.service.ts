@@ -7,10 +7,10 @@ import { InjectRepository } from '@nestjs/typeorm';
 import sanitizeHtml from 'sanitize-html';
 
 import { AuthUser } from 'src/server/auth';
-import { CommentsRepository } from './comments.repository';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
-import { Comment } from './entities/comment.entity';
+import { CommentsRepository } from '../repositories/comments.repository';
+import { CreateCommentDto } from '../dto/create-comment.dto';
+import { UpdateCommentDto } from '../dto/update-comment.dto';
+import { Comment } from '../entities/comment.entity';
 
 @Injectable()
 export class CommentsService {

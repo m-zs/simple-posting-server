@@ -1,9 +1,9 @@
 import { EntityRepository, Repository } from 'typeorm';
 
 import { AuthUser } from 'src/server/auth';
-import { CreateCommentDto } from './dto/create-comment.dto';
-import { UpdateCommentDto } from './dto/update-comment.dto';
-import { Comment } from './entities/comment.entity';
+import { CreateCommentDto } from '../dto/create-comment.dto';
+import { UpdateCommentDto } from '../dto/update-comment.dto';
+import { Comment } from '../entities/comment.entity';
 
 @EntityRepository(Comment)
 export class CommentsRepository extends Repository<Comment> {

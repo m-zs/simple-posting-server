@@ -15,9 +15,9 @@ import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 import { JwtGuard, AuthUser, GetUser } from 'src/server/auth';
 import { ValidatePayloadExistsPipe } from 'src/server/shared/pipes/validate-payload-exist.pipe';
-import { CommentsService } from './comments.service';
-import { UpdateCommentDto } from './dto/update-comment.dto';
-import { Comment } from './entities/comment.entity';
+import { CommentsService } from '../services/comments.service';
+import { UpdateCommentDto } from '../dto/update-comment.dto';
+import { Comment } from '../entities/comment.entity';
 
 @Controller('api/comments')
 @ApiTags('comments')

@@ -8,9 +8,11 @@ import {
 } from 'nestjs-typeorm-paginate';
 
 import { AuthUser } from 'src/server/auth';
-import { CommentsService } from 'src/server/comments/comments.service';
-import { CreateCommentDto } from 'src/server/comments/dto/create-comment.dto';
-import { Comment } from 'src/server/comments/entities/comment.entity';
+import {
+  CommentsService,
+  CreateCommentDto,
+  Comment,
+} from 'src/server/comments';
 import { ArticlesRepository } from '../repositories/articles.repository';
 import { Article } from '../entities/article.entity';
 import { CreateArticleDto } from '../dto/create-article.dto';

@@ -3,9 +3,9 @@ import { Test, TestingModule } from '@nestjs/testing';
 import sanitizeHtml from 'sanitize-html';
 
 import { MockType } from 'src/server/types';
-import { CommentsRepository } from './comments.repository';
+import { CommentsRepository } from '../repositories/comments.repository';
 import { CommentsService } from './comments.service';
-import { Comment } from './entities/comment.entity';
+import { Comment } from '../entities/comment.entity';
 
 jest.mock('sanitize-html');
 
