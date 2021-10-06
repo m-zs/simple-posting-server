@@ -1,11 +1,11 @@
 import { Logger, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { AuthModule } from 'src/server/auth/auth.module';
 import { MockType } from 'src/server/types';
+import { AuthModule } from 'src/server/auth/auth.module';
+import { UsersRepository } from '../repositories/users.repository';
+import { UsersService } from '../services/users.service';
 import { UsersController } from './users.controller';
-import { UsersRepository } from './users.repository';
-import { UsersService } from './users.service';
 
 describe('UsersController', () => {
   let usersController: UsersController;

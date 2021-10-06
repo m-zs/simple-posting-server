@@ -18,15 +18,14 @@ import {
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Pagination } from 'nestjs-typeorm-paginate';
 
-import { JwtGuard, AuthUser } from 'src/server/auth';
 import { PaginationResponse } from 'src/server/shared/decorators/pagination-response.decorator';
-import { PaginationDto } from 'src/server/shared/dto/pagination.dto';
 import { ValidatePayloadExistsPipe } from 'src/server/shared/pipes/validate-payload-exist.pipe';
-import { GetUser } from 'src/server/auth/decorators/get-user.decorator';
-import { User } from './entities/user.entity';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { UsersService } from './users.service';
+import { PaginationDto } from 'src/server/shared/dto/pagination.dto';
+import { JwtGuard, AuthUser, GetUser } from 'src/server/auth';
+import { User } from '../entities/user.entity';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { UsersService } from '../services/users.service';
 
 @Controller('api/users')
 @ApiTags('users')

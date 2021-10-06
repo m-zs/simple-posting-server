@@ -6,9 +6,9 @@ import {
   Pagination,
 } from 'nestjs-typeorm-paginate';
 
-import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './entities/user.entity';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { UpdateUserDto } from '../dto/update-user.dto';
+import { User } from '../entities/user.entity';
 
 @EntityRepository(User)
 export class UsersRepository extends Repository<User> {

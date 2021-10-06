@@ -3,8 +3,7 @@ import { NotFoundException } from '@nestjs/common';
 import sanitizeHtml from 'sanitize-html';
 
 import { MockType } from 'src/server/types';
-import { CommentsService } from 'src/server/comments/comments.service';
-import { CommentsModule } from 'src/server/comments/comments.module';
+import { CommentsModule, CommentsService } from 'src/server/comments';
 import { ArticlesRepository } from '../repositories/articles.repository';
 import { FindArticleDto } from '../dto/find-article.dto';
 import { ArticlesService } from './articles.service';
