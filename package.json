@@ -8,17 +8,17 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.{ts,tsx}\" \"test/**/*.{ts,tsx}\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "cross-env NODE_ENV=TEST jest --passWithNoTests",
-    "test:watch": "cross-env NODE_ENV=TEST jest --watch",
-    "test:cov": "cross-env NODE_ENV=TEST jest --coverage",
-    "test:debug": "cross-env NODE_ENV=TEST node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "cross-env NODE_ENV=TEST jest --config ./test/jest-e2e.json",
+    "start:prod": "node dist/server/main",
+    "lint": "eslint \"{src,apps,libs,test}/**/*.{ts,tsx}\" --fix",
+    "test": "cross-env NODE_ENV=test jest --passWithNoTests",
+    "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "test:cov": "cross-env NODE_ENV=test jest --coverage",
+    "test:debug": "cross-env NODE_ENV=test node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
+    "test:e2e": "cross-env NODE_ENV=test jest --config ./test/jest-e2e.json",
     "prepare": "husky install"
   },
   "dependencies": {
@@ -35,13 +35,18 @@
     "cookie-parser": "^1.4.5",
     "nest-winston": "^1.6.0",
     "nestjs-typeorm-paginate": "^3.0.0",
+    "next": "^11.1.2",
     "passport": "^0.4.1",
     "passport-jwt": "^4.0.0",
     "pg": "^8.7.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "sanitize-html": "^2.5.1",
+    "styled-components": "^5.3.1",
+    "styled-normalize": "^8.0.7",
     "swagger-ui-express": "^4.1.6",
     "typeorm": "^0.2.37",
     "winston": "^3.3.3"
@@ -52,13 +57,17 @@
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",
+    "@testing-library/react": "^12.1.1",
     "@types/bcrypt": "^5.0.0",
     "@types/cookie-parser": "^1.4.2",
     "@types/express": "^4.17.13",
     "@types/jest": "^27.0.1",
     "@types/node": "^16.0.0",
     "@types/passport-jwt": "^3.0.6",
+    "@types/react": "^17.0.26",
+    "@types/react-dom": "^17.0.9",
     "@types/sanitize-html": "^2.3.2",
+    "@types/styled-components": "^5.1.14",
     "@types/supertest": "^2.0.11",
     "@typescript-eslint/eslint-plugin": "^4.28.2",
     "@typescript-eslint/parser": "^4.28.2",
@@ -74,28 +83,7 @@
     "ts-jest": "^27.0.3",
     "ts-loader": "^9.2.3",
     "ts-node": "^10.0.0",
-    "tsconfig-paths": "^3.10.1",
     "typescript": "^4.3.5"
-  },
-  "jest": {
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "ts"
-    ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
-    "transform": {
-      "^.+\\.(t|j)s$": "ts-jest"
-    },
-    "collectCoverageFrom": [
-      "**/*.(t|j)s"
-    ],
-    "coverageDirectory": "../coverage",
-    "testEnvironment": "node",
-    "moduleNameMapper": {
-      "^src/(.*)$": "<rootDir>/$1"
-    }
   },
   "lint-staged": {
     "*.(js|ts)": [
