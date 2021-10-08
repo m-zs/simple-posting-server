@@ -5,7 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Request } from 'express';
 
 import { UsersRepository } from 'src/server/users/repositories/users.repository';
-import { configService } from 'src/server/config/config.service';
+import { configService } from 'src/server/config';
 import { AuthUser } from '../types/auth-user.type';
 import { JWTPayload } from './jwt-payload.interface';
 
