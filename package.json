@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
-    "build": "nest build",
+    "build": "nest build && npm run build:next",
     "format": "prettier --write \"src/**/*.{ts,tsx}\" \"test/**/*.{ts,tsx}\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -87,7 +87,7 @@
     "typescript": "^4.3.5"
   },
   "lint-staged": {
-    "*.(js|ts)": [
+    "*.ts": [
       "npm run lint",
       "npm run test"
     ]
