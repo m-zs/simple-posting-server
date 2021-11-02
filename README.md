@@ -1,3 +1,22 @@
+# Simple CRUD based on NestJS
+
+http://simple-posting-app.herokuapp.com/
+
+http://simple-posting-app.herokuapp.com/api
+
+## TODO:
+ - FE based on SSR next.js (only setup done)
+ - e2e / integration tests
+ - cache with redis or memory
+ - more feats like following / likes?
+
+## Stack
+- nestJS and friends (ts, swagger, jest, etc)
+- next.js for views
+- postgres for storage (aws rdb)
+- heroku for host (it uses HTTP 1.1, but its free :D)
+- circleci for CI/CD
+
 ## Installation
 1. Remember to use current nvm version
 2. Run installation with:
